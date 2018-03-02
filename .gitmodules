@@ -1,3 +1,12 @@
 [submodule "dashboard"]
 	path = dashboard
 	url = https://github.com/ljcom/dashboard.git
+[submodule "celljs"]
+	path = celljs
+	url = https://github.com/ljcom/celljs.git
+[submodule "autosuggest"]
+	path = autosuggest
+	url = https://github.com/ljcom/autosuggest.git
+[submodule "ophupload"]
+	path = ophupload
+	url = https://github.com/ljcom/ophupload.git
