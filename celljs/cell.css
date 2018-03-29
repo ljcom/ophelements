@@ -1,0 +1,36 @@
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    display: block; /* For Firefox */
+    color:#999999;
+}
+
+.cell-table {
+    /* magic */
+    /*width: 100%;
+    table-layout: fixed;*/
+    /*not really necessary, removes extra white space */
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 0;
+}
+
+    .cell-table td {
+        white-space: nowrap;
+        /* overflow: hidden; */
+        /* overflow: hidden; */
+        text-overflow: clip;
+    }
+
+
+.select2-container--default .select2-selection--multiple {
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border: 0;
+    border-bottom: 1px solid #333;
+}
+
+
