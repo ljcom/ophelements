@@ -50,3 +50,47 @@ function autosuggest_setValue(SelectID, code, colKey, defaultValue, wf1, wf2) {
 
     return aj;
 }
+
+
+// auto suggest pop-up
+function loadModalForm(divID, code, guid) {
+    var xmldoc = 'OPHCore/api/default.aspx?mode=form&code=' + code + '&guid=' + guid + '&unique=' + getUnique();
+    var xsldoc = 'OPHContent/themes/' + loadThemeFolder() + '/xslt/master_form_modal.xslt';
+
+    if (code.indexOf('par') == 0) {
+        $('#' + divID).text('| Parameter : ' + code);
+    } else {
+        showXML(divID, xmldoc, xsldoc, true, true);
+    }
+}
+
+function saveModalForm(ini, selectID, code, guid) {
+    $(ini).button('loading');
+    var selectID = $(ini).parents("div[id*='addNew']").attr('id');
+    selectID = selectID.split('addNew').join('');
+    var md = "#addNew" + selectID;
+    var formId = $('#modalForm' + selectID).children('form:first').attr('id');
+
+    saveFunction(code, guid, 50, formId, function (data) {
+        var msg = $(data).children().find("message").text();
+        var retguid = $(data).children().find("guid").text();
+        msg = (msg == "") ? $('#notiModal').data('message') : msg;
+
+        if (isGuid(retguid)) {
+            $(ini).button('reset');
+            $(md).modal('hide');
+            autosuggestSetValue(selectID, getCode(), selectID, retguid);
+        } else {
+            if (msg != "") {
+                //show error message
+                $('#modalFormAlert' + code + ' p').text(msg);
+                $('#modalFormAlert' + code).show();
+                $(md).animate({ scrollTop: 0 }, 'slow');
+                $(ini).button('reset');
+            } else {
+                $(ini).button('reset');
+            }
+        }
+    })
+
+}

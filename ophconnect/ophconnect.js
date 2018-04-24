@@ -36,7 +36,10 @@ function signIn(withchaptcha) {
                         setCookie('userId', uid, 7);
                         window.location = landingPage;
                     }
-                    if ($(this)[0].nodeName == "message") showMessage(msg, 4);
+                    if ($(this)[0].nodeName == "message") {
+                        showMessage(msg, 4, true, function () { window.location.reload(); })
+
+                    }
                 }
                 else {
 

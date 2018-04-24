@@ -681,10 +681,12 @@ function cell_add(code, columns, isParent, t) {
             + (isParent ? "<tr id='tr2_" + code + "00000000-0000-0000-0000-000000000000' style='display:none'><td colspan='100'></td></tr>" : ""))
         cell_init(code);
 
-
+        start= null;
+        lastStart=null;
         n = $("#tr1_" + code + "00000000-0000-0000-0000-000000000000").find(".cell").eq(0);
         $(n).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
         cell_focus(n);
+        //cell_preview(1, getCode(), "00000000-0000-0000-0000-000000000000", n);
         cell_added = true;
         cell_elementonchange = n;
         cell_button_onsave(n, true);
@@ -803,8 +805,7 @@ function cell_autosuggest_onchange(ini, code, GUID) {
     }
 }
 function cell_selectAll(t) {
-    $(t).pa
-    rent().parent().parent().find("tr").each(function (i) {
+    $(t).parent().parent().parent().find("tr").each(function (i) {
         tx = $(t).parent().parent().parent().find("tr").eq(i).find(".cell-recordSelector");
         if ($(tx).children("span").children("ix").hasClass("fa-thumb-tack")) {
             $(tx).children("span").children("ix").removeClass("fa-thumb-tack");
