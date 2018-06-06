@@ -8,11 +8,15 @@ function autosuggest_onchange(ini, flag, code, GUID, formid) {
     if (dataOld != dataValue) {
         $(ini).data('old', dataValue);
         preview(flag, code, GUID, formid, ini);
-        if ($(this).data("child") == 'Y') {
+        if ($(ini).data("child") == 'Y') {
+            $('#child_button_addSave').show();
             $('#child_button_save').show();
+            $('#child_button_cancel').show();
         }
         else {
+            $('#button_addSave').show();
             $('#button_save').show();
+            $('#button_cancel').show();
         }
 
     }

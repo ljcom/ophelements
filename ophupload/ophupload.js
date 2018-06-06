@@ -58,13 +58,18 @@ function upload_init(code, f_success, f_error) {
                 var input = $(this),
                     numFiles = input.get(0).files ? input.get(0).files.length : 1,
                     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    //label = input.get(0).files.join(',');
+                label = "";
+                for (var i = 0; i < input[0].files.length; i++) {
+                    label = label + ", " + input[0].files[i].name;
+                }
 
                 input.trigger('fileselect', [numFiles, label]);
 
 
                 var file = this.files[0];
-                if (file.size > 1024000) {
-                    alert('max upload size is 1M')
+                if (file.size > 5024000) {
+                    alert('max upload size is 5M')
                 }
                     //submit ajax
                 else {
@@ -117,8 +122,8 @@ function export_init(code, withParam, mode, par, xmlpar, afterSuccess) {
         input.trigger('fileselect', [numFiles, label]);
         var file = this.files[0];
             
-        if (file.size > 1024000) {
-            showMessage("Maximum file size is 1 Mb / 1000 Kb");
+        if (file.size > 10000000) {
+            showMessage("Maximum file size is 10 Mb");
             $('#btn_exp').button('reset');
             $('#btn_imp').removeAttr('disabled');
             $("body").css("cursor", "default");

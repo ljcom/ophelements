@@ -138,7 +138,7 @@ function cell_init(code) {
                                 colkey: $(this).parent().parent().data("field"),
                                 search: params.term,
                                 wf1value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf1")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").val(),
-                                wf2value: ($("#" + wf2).val() === undefined ? "" : $("#" + wf2).val()),
+                                wf2value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf2")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").val(),
                                 page: params.page
                             }
                             return query;
@@ -164,7 +164,7 @@ function cell_init(code) {
                     var v = $(".cell-editor-select2").eq(i).find("select").val();
                     var preview = $(".cell-editor-select2").eq(i).data("preview");
                     cell_autosuggest_onchange(this, getCode(), id);
-                    if (v != id) {
+                    if (v != id && v!='NULL') {
                         cell_changed = true;
                         cell_button_onsave(this, true);
 
@@ -580,6 +580,7 @@ function cell_save(afterSuccess) {
                 saveFunction1(code, guid, '30', formId, dataFrm, function (data) {
                     var msg = $(data).children().find("message").text();
                     var retguid = $(data).children().find("guid").text();
+                    var parentKey = document.getElementById('PKName').value;
 
                     if (isGuid(msg)) retguid = msg;    //compatible with old version
 
@@ -600,7 +601,9 @@ function cell_save(afterSuccess) {
                             cell_button_onsave(t, false);
 
                             cell_elementonchange = null;
-
+                            var modes = getCookie(code.toLowerCase() + '_browseMode');
+                            if (modes == '') modes = 'inline';
+                            loadChild(code, parentKey, cid, null, modes, "undefined");
                         }
                         else if (retguid != guid) {//new
                             $(lastStart).parent().data("guid", retguid);
@@ -622,6 +625,8 @@ function cell_save(afterSuccess) {
                             cell_button_onsave(t, false);
 
                             cell_elementonchange = null;
+
+                            loadChild(code, parentKey, cid, null, "inline", "undefined");
                         }
                         if (typeof afterSuccess == "function") afterSuccess(data);
                     }
@@ -709,6 +714,10 @@ function cell_cancelAdded() {
 
 function cell_delete(code, t) {
     var guidlist = [];
+    var cid = $("#cid").val();
+    var parentKey = document.getElementById('PKName').value;
+    var mode = getCookie(code.toLowerCase() + '_browseMode')
+
     $(t).parent().parent().children("div").children("table").children("tbody").children("tr").children("td.cell-recordSelector").children("span").children("ix.fa-thumb-tack").each(function (i) {
         guidlist.push($(t).parent().parent().children("div").children("table").children("tbody").children("tr").children("td.cell-recordSelector").children("span").children("ix.fa-thumb-tack").eq(i).parent().parent().parent().data("guid"));
     });
@@ -717,6 +726,7 @@ function cell_delete(code, t) {
         btn_function(code, g, 'delete', null, 30, null, function (data) {
             //alert("deleted");
         });
+        loadChild(code, parentKey, cid, null, mode, "undefined");
     }
     else showMessage("Please tack at least one record to be deleted.", 4)
 }
