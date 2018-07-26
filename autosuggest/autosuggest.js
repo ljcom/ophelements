@@ -53,7 +53,8 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
 				}
 			}));
 		}
-		else {
+        else {
+
 			$.ajax({
 				url: "OPHCORE/api/msg_autosuggest.aspx",
 				data: {

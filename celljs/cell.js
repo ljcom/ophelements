@@ -8,108 +8,108 @@ var cell_deferred;
 function cell_init(code) {
 
     $(".cell").css('vertical-align', 'middle');
-	
+
     $(".cell").each(function (i) {
         var c = $(".cell").eq(i);
         if ($(c).parent().data("code"))
             if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && c.data('old') == undefined) {
-                if (isIE() || isEdge()) { 
-					c.data('old', $(".cell").eq(i).children('div').html());
-				}
-				else {
-					c.data('old', $(".cell").eq(i).html());
-				}
+                if (isIE() || isEdge()) {
+                    c.data('old', $(".cell").eq(i).children('div').html());
+                }
+                else {
+                    c.data('old', $(".cell").eq(i).html());
+                }
                 c.click(function () {
-                    if (start!=this) cell_focus(this);
+                    if (start != this) cell_focus(this);
                 });
             }
     });
 
     $(".cell-editor-textbox").each(function (i) {
         var c = $(".cell-editor-textbox").eq(i);
-		if (isIE() || isEdge()) {
-			if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() 
-				&& $(".cell-editor-textbox").eq(i).children('div').attr('contenteditable')==undefined) {
-				txt=$(".cell-editor-textbox").eq(i).html();
-				$(".cell-editor-textbox").eq(i).html("<div contenteditable='true' placeholder='Enter Text Here...' style='overflow:none'>"+txt+"</div>")
-			}
-		}
-		else {
-			if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && $(".cell-editor-textbox").eq(i).attr('contenteditable') == undefined) {
-				$(".cell-editor-textbox").eq(i).attr('contenteditable', 'true');
-				$(".cell-editor-textbox").eq(i).attr('placeholder', 'Enter Text Here...');
-				$(".cell-editor-textbox").eq(i).css('overflow', 'auto');
-				
-			}
-		}
+        if (isIE() || isEdge()) {
+            if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()
+                && $(".cell-editor-textbox").eq(i).children('div').attr('contenteditable') == undefined) {
+                txt = $(".cell-editor-textbox").eq(i).html();
+                $(".cell-editor-textbox").eq(i).html("<div contenteditable='true' placeholder='Enter Text Here...' style='overflow:none'>" + txt + "</div>")
+            }
+        }
+        else {
+            if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && $(".cell-editor-textbox").eq(i).attr('contenteditable') == undefined) {
+                $(".cell-editor-textbox").eq(i).attr('contenteditable', 'true');
+                $(".cell-editor-textbox").eq(i).attr('placeholder', 'Enter Text Here...');
+                $(".cell-editor-textbox").eq(i).css('overflow', 'auto');
+
+            }
+        }
     });
-	
+
     $(".cell-editor-datepicker").each(function (i) {
         var c = $(".cell-editor-datepicker").eq(i);
         if (isIE() || isEdge()) {
-            if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() 
-				&& $(".cell-editor-datepicker").eq(i).children('div').attr('contenteditable') == undefined) {
-					
-			    txt=$(".cell-editor-datepicker").eq(i).html();
+            if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()
+                && $(".cell-editor-datepicker").eq(i).children('div').attr('contenteditable') == undefined) {
+
+                txt = $(".cell-editor-datepicker").eq(i).html();
                 d1 = new Date(txt);
                 d = d1.getDate() + '/' + (d1.getMonth() + 1) + '/' + d1.getFullYear();
-				$(".cell-editor-datepicker").eq(i).html("<div contenteditable='true' data-date='"+d+"'>"+txt+"</div>");
-				
-				$('.cell-editor-datepicker').eq(i).children('div').datepicker({
-					autoclose: true,
-					format: "dd M yyyy",
-					onSelect: function (date) {
-						$(this).html(date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear());
+                $(".cell-editor-datepicker").eq(i).html("<div contenteditable='true' data-date='" + d + "'>" + txt + "</div>");
 
-					}
-				})
-					.on('changeDate', function (ev) {
-						if (ev.date != undefined) $(this).html(ev.date.getMonth() + 1 + '/' + ev.date.getDate() + '/' + ev.date.getFullYear());
-						cell_changed = true;
-						cell_button_onsave(start, true);
+                $('.cell-editor-datepicker').eq(i).children('div').datepicker({
+                    autoclose: true,
+                    format: "dd M yyyy",
+                    onSelect: function (date) {
+                        $(this).html(date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear());
 
-						cell_elementonchange = start;
-						cell_edit(start);
-					});
-					
-				$('.cell-editor-datepicker').eq(i).children('div').focus(function () {
-					if ($(this).html() == '')
-						$(this).datepicker("setDate", new Date());
+                    }
+                })
+                    .on('changeDate', function (ev) {
+                        if (ev.date != undefined) $(this).html(ev.date.getMonth() + 1 + '/' + ev.date.getDate() + '/' + ev.date.getFullYear());
+                        cell_changed = true;
+                        cell_button_onsave(start, true);
 
-				});
-			}	
-		}
-		else {
-			if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() 
-				&& $(".cell-editor-datepicker").eq(i).attr('contenteditable') == undefined) {
-					
+                        cell_elementonchange = start;
+                        cell_edit(start);
+                    });
+
+                $('.cell-editor-datepicker').eq(i).children('div').focus(function () {
+                    if ($(this).html() == '')
+                        $(this).datepicker("setDate", new Date());
+
+                });
+            }
+        }
+        else {
+            if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()
+                && $(".cell-editor-datepicker").eq(i).attr('contenteditable') == undefined) {
+
                 $(".cell-editor-datepicker").eq(i).attr('contenteditable', 'true');
                 d1 = new Date($(".cell-editor-datepicker").eq(i).html());
                 d = d1.getDate() + '/' + (d1.getMonth() + 1) + '/' + d1.getFullYear();
                 $(".cell-editor-datepicker").eq(i).data("date", d);
-            
-				$('.cell-editor-datepicker').eq(i).datepicker({
-					autoclose: true,
-					format: "dd M yyyy",
-					onSelect: function (date) {
-						$(this).html(date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear());
-					}
-				})
-                .on('changeDate', function (ev) {
-                    if (ev.date != undefined) $(this).html(ev.date.getMonth() + 1 + '/' + ev.date.getDate() + '/' + ev.date.getFullYear());
-                    cell_changed = true;
-                    cell_button_onsave(start, true);
 
-                    cell_elementonchange = start;
-                    cell_edit(start);
+                $('.cell-editor-datepicker').eq(i).datepicker({
+                    autoclose: true,
+                    format: "dd M yyyy",
+                    onSelect: function (date) {
+                        $(this).html(date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear());
+                    }
+                })
+                    .on('changeDate', function (ev) {
+                        if (ev.date != undefined) $(this).html(ev.date.getMonth() + 1 + '/' + ev.date.getDate() + '/' + ev.date.getFullYear());
+                        cell_changed = true;
+                        cell_button_onsave(start, true);
+
+                        cell_elementonchange = start;
+                        cell_edit(start);
+                    });
+
+                $('.cell-editor-datepicker').eq(i).focus(function () {
+                    if ($(this).html() == '')
+                        $(this).datepicker("setDate", new Date());
                 });
-				
-				$('.cell-editor-datepicker').eq(i).focus(function () {
-					if ($(this).html() == '')
-						$(this).datepicker("setDate", new Date());
-				});
-			}
-		}
+            }
+        }
     });
 
     $(".cell-editor-checkbox").each(function (i) {
@@ -186,24 +186,24 @@ function cell_init(code) {
 
                 $(".cell-editor-select2").eq(i).change(function () {
                     var id = $(".cell-editor-select2").eq(i).data("id");
+                    var o = $(".cell-editor-select2").eq(i).find("select").data("old");
                     var v = $(".cell-editor-select2").eq(i).find("select").val();
                     var preview = $(".cell-editor-select2").eq(i).data("preview");
                     cell_autosuggest_onchange(this, getCode(), id);
-                    if (v != id && v!='NULL') {
+                    if (v != o && v != 'NULL') {
                         cell_changed = true;
                         cell_button_onsave(start, true);
 
                         cell_elementonchange = start;
                         cell_edit(start);
+
+                        setTimeout(function () {
+
+                            g = $(start).parent().data("guid");
+                            var preview = $(start).data("preview");
+                            cell_preview(preview, code, g, null, start);
+                        }, 100);
                     }
-
-                    setTimeout(function () {
-
-                        g = $(start).parent().data("guid");
-                        var preview = $(start).data("preview");
-                        cell_preview(preview, code, g, null, start);
-                    }, 100);
-
                 })
 
                 $(".cell-editor-select2").eq(i).find('span').find("select").on('open', function () {
@@ -293,10 +293,9 @@ function cell_init(code) {
 
 }
 
-function cell_defer(def)
-{
-	cell_deferred=def;
-	
+function cell_defer(def) {
+    cell_deferred = def;
+
 }
 function cell_focus(sibling, mode) {	//mode=0 normal, mode=1 force, mode=2 save, mode=3 cancel
     if (mode == undefined) mode = 0;
@@ -313,6 +312,7 @@ function cell_focus(sibling, mode) {	//mode=0 normal, mode=1 force, mode=2 save,
             start = sibling;
         }
     }
+
 }
 
 
@@ -333,16 +333,15 @@ function cell_keyCheck(e) {
 
     } else if (kc >= 112 && kc <= 121) {	//f1-f10
         if (kc == '113') {  //f2
-            if (!window.getSelection().isCollapsed)
-			{
-				if (isIE() || isEdge()) {
-					placeCaretAtEnd($(start).children("div")[0]);
-				}
-				else {
-					placeCaretAtEnd($(start)[0]);
-				}
-				
-			}
+            if (!window.getSelection().isCollapsed) {
+                if (isIE() || isEdge()) {
+                    placeCaretAtEnd($(start).children("div")[0]);
+                }
+                else {
+                    placeCaretAtEnd($(start)[0]);
+                }
+
+            }
             else
                 cell_focus(start, 1);
 
@@ -419,7 +418,7 @@ function cell_keyCheck(e) {
 function placeCaretAtEnd(el) {
     el.focus();
     if (typeof window.getSelection != "undefined"
-            && typeof document.createRange != "undefined") {
+        && typeof document.createRange != "undefined") {
         var range = document.createRange();
         range.selectNodeContents(el);
         range.collapse(false);
@@ -491,23 +490,23 @@ function cell_cancelChange() {
 
         if ($(e).hasClass("cell-editor-checkbox"))
             $(e).find("input").val($(start).data("old") == "1" ? true : false);
-            //else if ($(e).hasClass("cell-editor-select2"))
+        //else if ($(e).hasClass("cell-editor-select2"))
         else if ($(e).hasClass("cell-editor-datepicker")) {
-			if (isIE() || isEdge()) 
-				$(e).children('div').datepicker("setDate", $(e).data("old"));
-			else
-				$(e).datepicker("setDate", $(e).data("old"));
-		}
+            if (isIE() || isEdge())
+                $(e).children('div').datepicker("setDate", $(e).data("old"));
+            else
+                $(e).datepicker("setDate", $(e).data("old"));
+        }
         else if ($(e).hasClass("cell-editor-select2"))
             $(e).find("select").val($(e).find("select").data("old")).trigger("change");
         else {
-			if (isIE() || isEdge()) {
-				$(e).children('div').html($(e).data("old"));
-			}
-			else {
-				$(e).html($(e).data("old"));
-			}
-		}
+            if (isIE() || isEdge()) {
+                $(e).children('div').html($(e).data("old"));
+            }
+            else {
+                $(e).html($(e).data("old"));
+            }
+        }
     })
 
     $(t).parent().find("td.cell-recordSelector").children("span").children("ix").removeClass("fa-pencil");
@@ -527,19 +526,19 @@ function cell_setFocus(t) {
     }
 
     $(t).focus();
-	
+
     if ($(t).hasClass("cell-editor-textbox") || $(t).hasClass("cell-editor-datepicker")) {
         //$(t).focus(function() {document.execCommand('selectAll', false, null)});
 
-        
-        if (isIE() || isEdge())  {
-			selectAllText($(t).children("div")[0]);
-			$(t).children("div").focus();
-		}
-		else {
-			selectAllText($(t)[0]);
-			$(t).focus();
-		}
+
+        if (isIE() || isEdge()) {
+            selectAllText($(t).children("div")[0]);
+            $(t).children("div").focus();
+        }
+        else {
+            selectAllText($(t)[0]);
+            $(t).focus();
+        }
     }
     else if ($(t).hasClass("cell-editor-select2") && $(t).hasClass("select2-hidden-accessible")) {
         $(t).find("span").find("select").select2('open');
@@ -555,11 +554,11 @@ function cell_blur(next) {
     g = $(start).parent().data("guid");
 
     var preview = $(start).data("preview");
-    var c 
+    var c
     if (c == undefined) {
-        c = $(start).parent().data('code') 
-        if(c != undefined){
-        code = c
+        c = $(start).parent().data('code')
+        if (c != undefined) {
+            code = c
         }
     }
     if (start == undefined) {
@@ -587,9 +586,10 @@ function cell_blur(next) {
 
 function cell_save(afterSuccess) {
     t = cell_elementonchange;
-    
+
     if (!cell_saveworking) {
         if (cell_changed || cell_added) {
+            cell_blur(start);
 
             clearTimeout(cell_autosave);
             var code = $(t).parent().data("code");
@@ -601,35 +601,37 @@ function cell_save(afterSuccess) {
                 lastStart = start;
 
                 $(t).parent().children("td.cell").each(function (i) {
-					if (isIE() || isEdge()) {
-						if ($(t).parent().children("td.cell").eq(i).children('div').html() == 'Enter Text Here...') {
-							$(t).parent().children("td.cell").eq(i).children('div').html('');
-						}						
-						
-					}
-					else {
-						if ($(t).parent().children("td.cell").eq(i).html() == 'Enter Text Here...') {
-							$(t).parent().children("td.cell").eq(i).html('');
-						}
-					}
+                    if (isIE() || isEdge()) {
+                        if ($(t).parent().children("td.cell").eq(i).children('div').html() == 'Enter Text Here...') {
+                            $(t).parent().children("td.cell").eq(i).children('div').html('');
+                        }
+
+                    }
+                    else {
+                        if ($(t).parent().children("td.cell").eq(i).html() == 'Enter Text Here...') {
+                            $(t).parent().children("td.cell").eq(i).html('');
+                        }
+                    }
                 });
 
                 var data = '';// new FormData();
-                $("#tr1_" + code.toLowerCase() + guid).children("td.cell").each(function (i) {
-                    f = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("field");
-                    if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-select2"))
-                        d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
-                    else if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-checkbox"))
-                        d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("input").prop('checked') ? 1 : 0;
-                    else {
-						if (isIE() || isEdge()) {
-							d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).children('div').html();	
-						}
-						else {
-							d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).html();
-						}
-					}
-                    if (d != undefined && d != null) data = data + f + '=' + d.replace("&nbsp;", " ") + '&';
+                $("#tr1_" + code.toLowerCase() + guid).children("td.cell").each(function (i, td) {
+                    if (!$(td).hasClass("cell-disabled")) {
+                        f = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("field");
+                        if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-select2"))
+                            d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
+                        else if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-checkbox"))
+                            d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("input").prop('checked') ? 1 : 0;
+                        else {
+                            if (isIE() || isEdge()) {
+                                d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).children('div').html();
+                            }
+                            else {
+                                d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).html();
+                            }
+                        }
+                        if (d != undefined && d != null) data = data + f + '=' + d.replace("&nbsp;", " ") + '&';
+                    }
                 });
 
                 if ($("#tr1_" + code.toLowerCase() + guid).parents("tr").length > 0)
@@ -645,7 +647,7 @@ function cell_save(afterSuccess) {
                 saveFunction1(code, guid, '30', formId, dataFrm, function (data) {
                     var msg = $(data).children().find("message").text();
                     var retguid = $(data).children().find("guid").text();
-					var reload = $(data).children().find("reload").text();
+                    var reload = $(data).children().find("reload").text();
                     var parentKey = document.getElementById('PKName').value;
 
                     if (isGuid(msg)) retguid = msg;    //compatible with old version
@@ -654,12 +656,12 @@ function cell_save(afterSuccess) {
                         if (retguid == guid) {//update
                             $(lastStart).parent().children("td.cell").each(function (i) {
                                 if (isIE() || isEdge()) {
-									var h = $(lastStart).parent().children("td.cell").eq(i).children('div').html();
-								}
-								else {
-									var h = $(lastStart).parent().children("td.cell").eq(i).html();
-								}
-								$(lastStart).parent().children("td.cell").eq(i).data("old", h);
+                                    var h = $(lastStart).parent().children("td.cell").eq(i).children('div').html();
+                                }
+                                else {
+                                    var h = $(lastStart).parent().children("td.cell").eq(i).html();
+                                }
+                                $(lastStart).parent().children("td.cell").eq(i).data("old", h);
                             })
 
                             //$(lastStart).parent().find("td.cell-recordSelector").find("ix").addClass("fa-caret-right");
@@ -674,7 +676,7 @@ function cell_save(afterSuccess) {
                             cell_elementonchange = null;
                             var modes = getCookie(code.toLowerCase() + '_browseMode');
                             if (modes == '') modes = 'inline';
-                            if (reload=='1') loadChild(code, parentKey, cid, null, modes, "undefined");
+                            if (reload == '1') loadChild(code, parentKey, cid, null, modes, "undefined");
 
                         }
                         else if (retguid != guid) {//new
@@ -697,8 +699,8 @@ function cell_save(afterSuccess) {
                             cell_button_onsave(start, false);
 
                             cell_elementonchange = null;
-                            
-                            if (reload=='1') loadChild(code, parentKey, cid, null, "inline", "undefined");
+
+                            if (reload == '1') loadChild(code, parentKey, cid, null, "inline", "undefined");
                         }
                         if (typeof afterSuccess == "function") afterSuccess(data);
                     }
@@ -716,14 +718,16 @@ function cell_save(afterSuccess) {
 }
 
 function cell_edit(t) {
-    cell_clearTack(t);
-    $(t).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-caret-right");
-    $(t).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
+    if (!$(t).hasClass("cell-disabled")) {
+        cell_clearTack(t);
+        $(t).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-caret-right");
+        $(t).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
 
-    cell_changed = true;
-    cell_button_onsave(start, true);
-    cell_elementonchange = t;
-    cell_autosave = setTimeout(function () { cell_save() }, 60000);
+        cell_changed = true;
+        cell_button_onsave(start, true);
+        cell_elementonchange = t;
+        cell_autosave = setTimeout(function () { cell_save() }, 60000);
+    }
 }
 
 function cell_clearTack(t) {
@@ -758,12 +762,12 @@ function cell_add(code, columns, isParent, t) {
             + (isParent ? "<tr id='tr2_" + code + "00000000-0000-0000-0000-000000000000' style='display:none'><td colspan='100'></td></tr>" : ""))
         cell_init(code);
 
-        start= null;
-        lastStart=null;
+        start = null;
+        lastStart = null;
         n = $("#tr1_" + code + "00000000-0000-0000-0000-000000000000").find(".cell").eq(0);
         $(n).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
         cell_focus(n);
-        //cell_preview(1, getCode(), "00000000-0000-0000-0000-000000000000", n);
+        cell_preview(1, code, "00000000-0000-0000-0000-000000000000", null, n);
         cell_added = true;
         cell_elementonchange = n;
         cell_button_onsave(n, true);
@@ -795,7 +799,7 @@ function cell_delete(code, t) {
     });
     if (guidlist.length > 0) {
         var g = guidlist.join(",")
-        btn_function(code, g, 'delete', null, 30, null, function (data) {
+        btn_function(code, g, 'delete', null, 30, null, null, function (data) {
             //alert("deleted");
         });
         loadChild(code, parentKey, cid, null, mode, "undefined");
@@ -812,19 +816,21 @@ function cell_collapse(t) {
 
 function cell_preview(flag, code, GUID, formid, t) {
     var data = '';// new FormData();
-    $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").each(function (i) {
-        f = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).data("field");
-        if ($("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).hasClass("cell-editor-select2"))
-            d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).find("select").val();
-        else {
-			if (isIE() || isEdge()) {
-				d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).children('div').html();
-			}
-			else {
-				d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).html();
-			}	
-		}
-        if (d != undefined) data = data + f + '=' + d.replace("&nbsp;", " ") + '&';
+    $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").each(function (i, td) {
+        if (!$(td).hasClass("cell-disabled")) {
+            f = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).data("field");
+            if ($("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).hasClass("cell-editor-select2"))
+                d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).find("select").val();
+            else {
+                if (isIE() || isEdge()) {
+                    d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).children('div').html();
+                }
+                else {
+                    d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).html();
+                }
+            }
+            if (d != undefined) data = data + f + '=' + d.replace("&nbsp;", " ") + '&';
+        } 
     });
 
     if ($("#tr1_" + code.toLowerCase() + GUID).parents("tr").length > 0)
@@ -865,12 +871,12 @@ function cell_preview(flag, code, GUID, formid, t) {
                         //}
                     } else {
                         //document.getElementById(this.tagName).value = $(this).text();
-						if (isIE() || isEdge()) {
-							$(t).parent().children("td.cell").eq(i).children('div').html($(dt).text());
-						}
-						else {
-							$(t).parent().children("td.cell").eq(i).html($(dt).text());
-						}
+                        if (isIE() || isEdge()) {
+                            $(t).parent().children("td.cell").eq(i).children('div').html($(dt).text());
+                        }
+                        else {
+                            $(t).parent().children("td.cell").eq(i).html($(dt).text());
+                        }
                     }
                 }
 
@@ -883,12 +889,12 @@ function cell_preview(flag, code, GUID, formid, t) {
 }
 
 function cell_autosuggest_onchange(ini, code, GUID) {
-    var dataOld = $(ini).data('old');
-    var dataValue = $(ini).val();
+    var dataOld = $(ini).find("select").data('old');
+    var dataValue = $(ini).find("select").val();
 
     if (dataOld != dataValue) {
-        $(ini).data('old', dataValue);
-       
+        $(ini).find("select").data('old', dataValue);
+
 
     }
 }
