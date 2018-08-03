@@ -2,7 +2,7 @@
 //connection
 function signIn(withchaptcha) {
     //if (top.document.domain == window.location.hostname) {
-    withchaptcha = (withchaptcha == 1) ? 1 : 0;
+    //withchaptcha = (withchaptcha == 1) ? 1 : 0;
     var uid = getCookie('userId');
     if ($("#userid").val() != "") uid = $("#userid").val();
     if (getCode() == 'lockscreen') uid = getCookie('userId');
@@ -13,7 +13,7 @@ function signIn(withchaptcha) {
     var dfLength = dataForm.length;
     dataForm = dataForm.substring(2, dfLength);
     dataForm = dataForm.split('%3C').join('%26lt%3B');
-    path = "OPHCore/api/default.aspx?mode=signin&userid=" + uid + "&pwd=" + pwd + "&withCaptcha=" + withchaptcha;
+    path = "OPHCore/api/default.aspx?mode=signin&userid=" + uid + "&pwd=" + pwd;// + "&withCaptcha=" + withchaptcha;
 
     $.ajax({
         url: path,
@@ -34,7 +34,8 @@ function signIn(withchaptcha) {
                     if ($(this)[0].nodeName == "userGUID") {
                         //setCookie('userId', $("#userid").val(), 7);
                         setCookie('userId', uid, 7);
-                        window.location = landingPage;
+                        goTo(landingPage);
+                        //window.location = landingPage;
                     }
                     if ($(this)[0].nodeName == "message") {
                         showMessage(msg, 4, true, function () { window.location.reload(); })
@@ -72,7 +73,8 @@ function signin_GConnect(gid) {
                     if ($(this)[0].nodeName == "userGUID") {
                         //setCookie('userId', $("#userid").val(), 7);
                         //setCookie('userId', uid, 7);
-                        window.location = landingPage;
+                        goTo(landingPage);
+                        //window.location = landingPage;
                     }
                     if ($(this)[0].nodeName == "message") showMessage(msg, 4);
                 }
@@ -115,3 +117,7 @@ function signInGConnect(googleUser) {
     }
 }
 
+function signoff() {
+    url = "OPHCore/api/default.aspx?mode=signoff";
+    $.post(url)
+}

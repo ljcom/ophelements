@@ -121,6 +121,7 @@ function cell_init(code) {
                 var chk = $(this).closest("tr").find("input:checkbox").get(0);
                 if (e.target != chk) {
                     if (start == c) {
+                        cell_save();
                         chk.checked = !chk.checked;
                         cell_changed = true;
                         cell_button_onsave(start, true);
@@ -131,6 +132,7 @@ function cell_init(code) {
 
             });
             $(c).find("input").click(function () {
+                cell_save();
                 cell_changed = true;
                 cell_button_onsave(start, true);
                 start = $(this).parent();
@@ -630,7 +632,7 @@ function cell_save(afterSuccess) {
                                 d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).html();
                             }
                         }
-                        if (d != undefined && d != null) data = data + f + '=' + d.replace("&nbsp;", " ") + '&';
+                        if (d != undefined && d != null) data = data + f + '=' + d.toString().replace("&nbsp;", " ") + '&';
                     }
                 });
 
@@ -829,7 +831,7 @@ function cell_preview(flag, code, GUID, formid, t) {
                     d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).html();
                 }
             }
-            if (d != undefined) data = data + f + '=' + d.replace("&nbsp;", " ") + '&';
+            if (d != undefined) data = data + f + '=' + d.toString().replace("&nbsp;", " ") + '&';
         } 
     });
 
