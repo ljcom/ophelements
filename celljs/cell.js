@@ -8,6 +8,7 @@ var cell_deferred;
 function cell_init(code) {
 
     $(".cell").css('vertical-align', 'middle');
+    
 
     $(".cell").each(function (i) {
         var c = $(".cell").eq(i);
@@ -22,6 +23,7 @@ function cell_init(code) {
                 c.click(function () {
                     if (start != this) cell_focus(this);
                 });
+                c.keydown(function (e) { cell_keyCheck(e) });
             }
     });
 
@@ -278,7 +280,7 @@ function cell_init(code) {
     });
 
 
-    document.onkeydown = cell_keyCheck;
+    //document.onkeydown = cell_keyCheck;
 
     window.onbeforeunload = function (event) {
         if (cell_added || cell_changed) {
@@ -414,7 +416,7 @@ function cell_keyCheck(e) {
     } else if (kc != undefined && kc != 16) {   //any else
         cell_edit(start);
     }
-
+    //event.preventDefault();
 }
 
 function placeCaretAtEnd(el) {
@@ -784,6 +786,7 @@ function cell_cancelAdded() {
     $(t).parent().remove();
     clearTimeout(cell_autosave);
     cell_added = false;
+    cell_changed= false;
 
     clearTimeout(cell_autosave);
     start = null;

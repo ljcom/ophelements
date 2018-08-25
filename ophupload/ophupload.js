@@ -102,6 +102,7 @@ function upload_init(code, f_success, f_error) {
                 log = label;
                 if (input.length) {
                     input.val(log);
+                    checkChanges(this);
                 } else {
                     //if( log ) alert(log);
                 }
