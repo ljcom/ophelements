@@ -23,7 +23,7 @@ function cell_init(code) {
                 c.click(function () {
                     if (start != this) cell_focus(this);
                 });
-                c.keydown(function (e) { cell_keyCheck(e) });
+                c.keydown(function (e) { return cell_keyCheck(e) });
             }
     });
 
@@ -321,16 +321,27 @@ function cell_focus(sibling, mode) {	//mode=0 normal, mode=1 force, mode=2 save,
 
 
 function cell_keyCheck(e) {
-    var kc = e.keyCode;
+    var isPrevent = true;
     e = e || window.event;
-    if (e.keyCode == '9') {	//tab
-        if (e.shiftKey) 	//shift-tab
+
+    var kc = e.keyCode;
+    var shift = e.shiftKey;
+
+    if (kc == '13' && !shift) {
+        kc = '9'
+        return false;
+    };         //if enter, changed to tab
+    if (kc == '13' && shift) {
+        shift = false;    //if shift-enter, changed to enter
+        return false;
+    }
+    
+    if (kc == '9') {	//tab
+        if (shift) 	//shift-tab
             kc = 37;		//right
         else
             kc = 39;		//left
-        //e.preventDefault;
     }
-
 
     if (kc == '27') {	//esc
         cell_cancelSave();
@@ -349,7 +360,6 @@ function cell_keyCheck(e) {
             else
                 cell_focus(start, 1);
 
-            event.preventDefault();
         }
     } else if (kc == 38) {	// up arrow
         if ($(start).length > 0) {
@@ -362,7 +372,6 @@ function cell_keyCheck(e) {
                 if ($(sibling).length > 0) cell_focus(sibling);
 
             }
-            event.preventDefault();
         }
     } else if (kc == 40) {	// down arrow
         if ($(start).length > 0) {
@@ -375,7 +384,6 @@ function cell_keyCheck(e) {
                 if ($(sibling).length > 0) cell_focus(sibling);
 
             }
-            event.preventDefault();
         }
     } else if (kc == '37') {	// left arrow
         if ($(start).length > 0) {
@@ -386,8 +394,6 @@ function cell_keyCheck(e) {
                 if (i == idx - 2) {
                     var sibling = $(start).parent().children("td.cell").eq(i);
                     if ($(sibling).length > 0) cell_focus(sibling);
-                    event.preventDefault();
-                    return false;
                 }
             });
         }
@@ -401,8 +407,6 @@ function cell_keyCheck(e) {
                 if (i == idx) {
                     var sibling = $(start).parent().children("td.cell").eq(i);
                     if ($(sibling).length > 0) cell_focus(sibling);
-                    event.preventDefault();
-                    return false;
                 }
             });
 
@@ -412,11 +416,17 @@ function cell_keyCheck(e) {
         var c = $(start).find("input").prop("checked");
         $(start).find("input").prop("checked", !c);
         //($(start).find(".input").checked();
-        event.preventDefault();
+        
     } else if (kc != undefined && kc != 16) {   //any else
         cell_edit(start);
+        isPrevent = false;
     }
-    //event.preventDefault();
+
+    if (isPrevent) {
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+    }
 }
 
 function placeCaretAtEnd(el) {
@@ -824,8 +834,11 @@ function cell_preview(flag, code, GUID, formid, t) {
     $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").each(function (i, td) {
         if (!$(td).hasClass("cell-disabled")) {
             f = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).data("field");
+
             if ($("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).hasClass("cell-editor-select2"))
                 d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).find("select").val();
+            else if ($("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).hasClass("cell-editor-checkbox"))
+                d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).find("input").val()=='on'? '1':'0';
             else {
                 if (isIE() || isEdge()) {
                     d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).children('div').html();
