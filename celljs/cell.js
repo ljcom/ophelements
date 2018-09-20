@@ -666,8 +666,8 @@ function cell_save(afterSuccess) {
                     var parentKey = document.getElementById('PKName').value;
 
                     if (isGuid(msg)) retguid = msg;    //compatible with old version
-
-                    if (retguid != "") {
+                    
+                    if (retguid != "") {                    
                         if (retguid == guid) {//update
                             $(lastStart).parent().children("td.cell").each(function (i) {
                                 if (isIE() || isEdge()) {
