@@ -1,14 +1,14 @@
 
 //connection
 function signIn(withchaptcha) {
-    //if (top.document.domain == window.location.hostname) {
-    //withchaptcha = (withchaptcha == 1) ? 1 : 0;
+    //if (top.document.domain === window.location.hostname) {
+    //withchaptcha = (withchaptcha === 1) ? 1 : 0;
     var uid = getCookie('userId');
-    if ($("#userid").val() != "") uid = $("#userid").val();
-    if (getCode() == 'lockscreen') uid = getCookie('userId');
+    if ($("#userid").val() !== "") uid = $("#userid").val();
+    if (getCode() === 'lockscreen') uid = getCookie('userId');
     var pwd = $("#pwd").val();
 
-    var dataForm = $('form').serialize() + '&source=' + window.location.toString().replace('&', '*').replace('?', '*') //.split('_').join('');
+    var dataForm = $('form').serialize() + '&source=' + window.location.toString().replace('&', '*').replace('?', '*'); //.split('_').join('');
 
     var dfLength = dataForm.length;
     dataForm = dataForm.substring(2, dfLength);
@@ -28,23 +28,23 @@ function signIn(withchaptcha) {
             var x = $(data).find("sqroot").children().each(function () {
                 var msg = $(this).text();
 
-                var landingPage = (getCookie('lastPar') == null || getCookie('lastPar') == '') ? '?' : getCookie('lastPar');
+                var landingPage = getCookie('lastPar') === null || getCookie('lastPar') === '' ? '?' : getCookie('lastPar');
 
-                if (msg != '') {
-                    if ($(this)[0].nodeName == "userGUID") {
+                if (msg !== '') {
+                    if ($(this)[0].nodeName === "userGUID") {
                         //setCookie('userId', $("#userid").val(), 7);
                         setCookie('userId', uid, 7);
                         goTo(landingPage);
                         //window.location = landingPage;
                     }
-                    if ($(this)[0].nodeName == "message") {
-                        showMessage(msg, 4, true, function () { window.location.reload(); })
+                    if ($(this)[0].nodeName === "message") {
+                        showMessage(msg, 4, true, function () { window.location.reload(); });
 
                     }
                 }
-                else {
+                //else {
 
-                }
+                //}
             });
 
 
@@ -67,20 +67,20 @@ function signin_GConnect(gid) {
             var x = $(data).find("sqroot").children().each(function () {
                 var msg = $(this).text();
 
-                var landingPage = (getCookie('lastPar') == null || getCookie('lastPar') == '') ? '?' : getCookie('lastPar');
+                var landingPage = getCookie('lastPar') === null || getCookie('lastPar') === '' ? '?' : getCookie('lastPar');
 
-                if (msg != '') {
-                    if ($(this)[0].nodeName == "userGUID") {
+                if (msg !== '') {
+                    if ($(this)[0].nodeName === "userGUID") {
                         //setCookie('userId', $("#userid").val(), 7);
                         //setCookie('userId', uid, 7);
                         goTo(landingPage);
                         //window.location = landingPage;
                     }
-                    if ($(this)[0].nodeName == "message") showMessage(msg, 4);
+                    if ($(this)[0].nodeName === "message") showMessage(msg, 4);
                 }
-                else {
+                //else {
 
-                }
+                //}
             });
 
 
@@ -99,8 +99,8 @@ function signOut(f) {
     $.post(path).done(function () {
         setCookie("cartID", "", 0, 0, 0);
         setCookie("isLogin", "0", 0, 1, 0);
-        if (typeof f == "function") f();
-        goHome()
+        if (typeof f === "function") f();
+        goHome();
     });
 
 }
@@ -113,11 +113,11 @@ function signInGConnect(googleUser) {
     //console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
     if (profile.getId()) {
         var id_token = googleUser.getAuthResponse().id_token;
-        signin_GConnect(id_token, profile.getName(), profile.getEmail(), profile.getImageUrl())
+        signin_GConnect(id_token, profile.getName(), profile.getEmail(), profile.getImageUrl());
     }
 }
 
 function signoff() {
     url = "OPHCore/api/default.aspx?mode=signoff";
-    $.post(url)
+    $.post(url);
 }

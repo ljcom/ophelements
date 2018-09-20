@@ -17,6 +17,9 @@ function autosuggest_onchange(ini, flag, code, GUID, formid) {
             $('#button_addSave').show();
             $('#button_save').show();
             $('#button_cancel').show();
+            $('#button_approve').hide();
+            $('#button_reject').hide();
+            $('#button_close').hide();
         }
 
     }
