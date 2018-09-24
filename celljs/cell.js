@@ -225,7 +225,7 @@ function cell_init(code) {
     $(".cell-parentSelector").each(function (i) {
         var c = $(".cell-parentSelector").eq(i);
         if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && !c.find("span").is("span") && ($(c).parent().data("guid") != '00000000-0000-0000-0000-000000000000')) {
-            c.html('<span><ix class="fa fa-plus"></ix></span>');
+            c.html('<span><ix class="far fa-plus"></ix></span>');
             c.click(function () {
                 if ($(this).children('span').find('ix').hasClass("fa-plus")) {
                     //cell_expand(this);
@@ -247,7 +247,7 @@ function cell_init(code) {
     });
     $(".cell-recordSelectors").each(function (i) {
         if ($(".cell-recordSelectors").eq(i).children("span").length == 0) {
-            $(".cell-recordSelectors").eq(i).html("<span><ix class='fa fa-thumb-tack'></ix></span>");
+            $(".cell-recordSelectors").eq(i).html("<span><ix class='far fa-thumbtack'></ix></span>");
 
             $(".cell-recordSelectors").eq(i).click(function () {
                 cell_selectAll(this);
@@ -263,17 +263,17 @@ function cell_init(code) {
             c.click(function () {
 
                 if ($(this).children('span').find('ix').hasClass("fa-pencil")) cell_save();
-                else //if (!$(this).children('span').find('ix').hasClass("fa-thumb-tack"))
+                else //if (!$(this).children('span').find('ix').hasClass("fa-thumbtack"))
                     cell_recordSelector(this);
             });
 
             c.mouseover(function () {
-                if (!$(this).children('span').find('ix').hasClass("fa-thumb-tack") && !$(this).children('span').find('ix').hasClass("fa-pencil"))
+                if (!$(this).children('span').find('ix').hasClass("fa-thumbtack") && !$(this).children('span').find('ix').hasClass("fa-pencil"))
                     $(this).children('span').find('ix').addClass("fa-caret-right");
             });
 
             c.mouseout(function () {
-                if (!$(this).children('span').find('ix').hasClass("fa-thumb-tack") && !$(this).children('span').find('ix').hasClass("fa-pencil"))
+                if (!$(this).children('span').find('ix').hasClass("fa-thumbtack") && !$(this).children('span').find('ix').hasClass("fa-pencil"))
                     $(this).children('span').find('ix').removeClass("fa-caret-right");
             });
         }
@@ -482,13 +482,13 @@ function cell_recordSelector(t) {
     $(t).parent().parent().find("tr").each(function (i) {
         $(t).parent().parent().find("tr").eq(i).find(".cell-recordSelector").children("span").children("ix").removeClass("fa-caret-right");
     })
-    if ($(t).children("span").children("ix").hasClass("fa-thumb-tack")) {
-        $(t).children("span").children("ix").removeClass("fa-thumb-tack");
+    if ($(t).children("span").children("ix").hasClass("fa-thumbtack")) {
+        $(t).children("span").children("ix").removeClass("fa-thumbtack");
         $(t).children("span").children("ix").addClass("fa-caret-right");
     }
     else {
         $(t).children("span").children("ix").removeClass("fa-caret-right");
-        $(t).children("span").children("ix").addClass("fa-thumb-tack");
+        $(t).children("span").children("ix").addClass("fa-thumbtack");
     }
 }
 function cell_cancelSave() {
@@ -747,7 +747,7 @@ function cell_edit(t) {
 
 function cell_clearTack(t) {
     $(t).parent().parent().find("tr").each(function (i) {
-        $(t).parent().parent().find("tr").eq(i).find("td.cell-recordSelector").find("ix").removeClass("fa-thumb-tack");
+        $(t).parent().parent().find("tr").eq(i).find("td.cell-recordSelector").find("ix").removeClass("fa-thumbtack");
     });
 }
 
@@ -810,8 +810,8 @@ function cell_delete(code, t) {
     var parentKey = document.getElementById('PKName').value;
     var mode = getCookie(code.toLowerCase() + '_browseMode')
 
-    $(t).parent().parent().children("div").children("table").children("tbody").children("tr").children("td.cell-recordSelector").children("span").children("ix.fa-thumb-tack").each(function (i) {
-        guidlist.push($(t).parent().parent().children("div").children("table").children("tbody").children("tr").children("td.cell-recordSelector").children("span").children("ix.fa-thumb-tack").eq(i).parent().parent().parent().data("guid"));
+    $(t).parent().parent().children("div").children("table").children("tbody").children("tr").children("td.cell-recordSelector").children("span").children("ix.fa-thumbtack").each(function (i) {
+        guidlist.push($(t).parent().parent().children("div").children("table").children("tbody").children("tr").children("td.cell-recordSelector").children("span").children("ix.fa-thumbtack").eq(i).parent().parent().parent().data("guid"));
     });
     if (guidlist.length > 0) {
         var g = guidlist.join(",")
@@ -920,13 +920,13 @@ function cell_autosuggest_onchange(ini, code, GUID) {
 function cell_selectAll(t) {
     $(t).parent().parent().parent().find("tr").each(function (i) {
         tx = $(t).parent().parent().parent().find("tr").eq(i).find(".cell-recordSelector");
-        if ($(tx).children("span").children("ix").hasClass("fa-thumb-tack")) {
-            $(tx).children("span").children("ix").removeClass("fa-thumb-tack");
+        if ($(tx).children("span").children("ix").hasClass("fa-thumbtack")) {
+            $(tx).children("span").children("ix").removeClass("fa-thumbtack");
             //$(tx).children("span").children("ix").addClass("fa-caret-right");
         }
         else {
             $(tx).children("span").children("ix").removeClass("fa-caret-right");
-            $(tx).children("span").children("ix").addClass("fa-thumb-tack");
+            $(tx).children("span").children("ix").addClass("fa-thumbtack");
         }
     })
 }
