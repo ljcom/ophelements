@@ -28,7 +28,7 @@ function signIn(withchaptcha) {
             var x = $(data).find("sqroot").children().each(function () {
                 var msg = $(this).text();
                 var app = window.location.href.substring(0, window.location.href.indexOf("/index")).substring(window.location.href.substring(0, window.location.href.indexOf("/index")).lastIndexOf("/") + 1)
-                var landingPage = getCookie(app+'_lastPar') === null || getCookie(app+'_lastPar') === '' ? '?' : getCookie('lastPar');
+                var landingPage = getCookie(app+'_lastPar') === null || getCookie(app+'_lastPar') === '' ? '?' : getCookie(app+'_lastPar');
 
                 if (msg !== '') {
                     if ($(this)[0].nodeName === "userGUID") {
