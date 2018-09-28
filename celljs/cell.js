@@ -765,7 +765,10 @@ function cell_add(code, columns, isParent, t) {
 
             //ix = i.split(":")
             if (ix[0].split("=")[0] != "")
-                columns_string += "<td class='cell cell-editor-" + ix[0].split("=")[1].trim() + "' data-field='" + ix[1].split("=")[1] + "' data-preview='" + ix[2].split("=")[1] + "' data-wf1='" + ix[4].split("=")[1] + "' data-wf2='" + ix[5].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
+                if (ix[0].split("=")[1] != "")
+                    columns_string += "<td class='cell cell-editor-" + ix[0].split("=")[1].trim() + "' data-field='" + ix[1].split("=")[1] + "' data-preview='" + ix[2].split("=")[1] + "' data-wf1='" + ix[4].split("=")[1] + "' data-wf2='" + ix[5].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
+                else
+                    columns_string += "<td class='cell cell-disabled' data-field='" + ix[1].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
             else
                 if (ix[1].split("=")[0] == undefined) columns_string += "<td class='cell'></td>"
         });
