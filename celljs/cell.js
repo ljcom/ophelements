@@ -819,6 +819,7 @@ function cell_delete(code, t) {
             //alert("deleted");
         });
         loadChild(code, parentKey, cid, null, mode, "undefined");
+        preview('1', getCode(), getGUID(), 'formheader', this);
     }
     else showMessage("Please tack at least one record to be deleted.", 4)
 }
