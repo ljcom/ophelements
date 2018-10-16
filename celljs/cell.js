@@ -48,6 +48,13 @@ function cell_init(code) {
 
     $(".cell-editor-datepicker").each(function (i) {
         var c = $(".cell-editor-datepicker").eq(i);
+
+        var fn = $(c).data("field");
+        var cd = $(c).parent().data("code");
+        var id = $(c).data("id");
+        var selid = fn + '_' + $(this).parent().data("guid");
+        $(c).attr("id", selid);
+
         if (isIE() || isEdge()) {
             if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()
                 && $(".cell-editor-datepicker").eq(i).children('div').attr('contenteditable') == undefined) {
@@ -55,7 +62,9 @@ function cell_init(code) {
                 txt = $(".cell-editor-datepicker").eq(i).html();
                 d1 = new Date(txt);
                 d = d1.getDate() + '/' + (d1.getMonth() + 1) + '/' + d1.getFullYear();
-                $(".cell-editor-datepicker").eq(i).html("<div contenteditable='true' data-date='" + d + "'>" + txt + "</div>");
+
+
+                $(".cell-editor-datepicker").eq(i).html("<div contenteditable='true' id='+selid+' data-date='" + d + "'>" + txt + "</div>");
 
                 $('.cell-editor-datepicker').eq(i).children('div').datepicker({
                     autoclose: true,
@@ -569,11 +578,11 @@ function cell_blur(next) {
     g = $(start).parent().data("guid");
 
     var preview = $(start).data("preview");
-    var c
+    var c;
     if (c == undefined) {
-        c = $(start).parent().data('code')
+        c = $(start).parent().data('code');
         if (c != undefined) {
-            code = c
+            code = c;
         }
     }
     if (start == undefined) {
@@ -586,16 +595,10 @@ function cell_blur(next) {
 
     if ($(start).parent().attr("id") != $(next).parent().attr("id")) {
 
-        cell_save()
+        cell_save();
 
         cell_clearTack(next);
         $(start).parent().find('.cell-recordSelector').children('span').find('ix').removeClass("fa-caret-right");
-        //$(next).parent().find('.cell-recordSelector').children('span').find('ix').addClass("fa-caret-right");  //start=next setelah save selesai
-
-        //$(lastStart).parent().find('.cell-recordSelector').children('span').find('ix').removeClass("fa-caret-right");
-        //$(start).parent().find('.cell-recordSelector').children('span').find('ix').addClass("fa-caret-right");  //start=next setelah save selesai
-    }
-    else {
     }
 }
 
@@ -688,6 +691,8 @@ function cell_save(afterSuccess) {
                             cell_changed = false;
                             cell_button_onsave(start, false);
 
+                            cell_preview(1, code, guid, null, start);
+
                             cell_elementonchange = null;
                             var modes = getCookie(code.toLowerCase() + '_browseMode');
                             if (modes == '') modes = 'inline';
@@ -713,6 +718,8 @@ function cell_save(afterSuccess) {
                             cell_added = false;
                             cell_button_onsave(start, false);
 
+                            cell_preview(1, code, retguid, null, start);
+
                             cell_elementonchange = null;
 
                             if (reload == '1') loadChild(code, parentKey, cid, null, "inline", "undefined");
@@ -720,7 +727,7 @@ function cell_save(afterSuccess) {
                         if (typeof afterSuccess == "function") afterSuccess(data);
                     }
                     else {//error
-                        showMessage(msg, 4);
+                        if (msg) showMessage(msg, 4);
                         //cell_changed = false;
                         cell_focus(lastStart);
 
