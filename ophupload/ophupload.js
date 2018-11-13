@@ -92,6 +92,7 @@ function upload_init(code, f_success, f_error) {
                         if (typeof f_error == "function") f_error(data);
                         else if (typeof f_success == "function") f_success(data);
                     });
+                    preview('1', getCode(), getGUID(), 'formheader', this);
                 }
             });
 
