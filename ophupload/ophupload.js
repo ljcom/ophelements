@@ -60,8 +60,11 @@ function upload_init(code, f_success, f_error) {
                     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
                     //label = input.get(0).files.join(',');
                 label = "";
-                for (var i = 0; i < input[0].files.length; i++) {
+                for (var i = 1; i < input[0].files.length; i++) {
                     label = label + ", " + input[0].files[i].name;
+                }
+                if (label == "") {
+                    label = input[0].files[0].name
                 }
 
                 input.trigger('fileselect', [numFiles, label]);
