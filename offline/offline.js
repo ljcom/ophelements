@@ -69,3 +69,16 @@ appCache.addEventListener('noupdate', function () {
 appCache.addEventListener('cached', function () {
     loadingDone();
 }, false);
+
+
+
+
+function clearCache() {
+    var appCache = window.applicationCache;
+
+    appCache.update(); //this will attempt to update the users cache and changes the application cache status to 'UPDATEREADY'.
+
+    if (appCache.status == window.applicationCache.UPDATEREADY) {
+        appCache.swapCache(); //replaces the old cache with the new one.
+    }
+}

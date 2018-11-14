@@ -4,19 +4,32 @@ function signIn(account) {
     var uid = getCookie(account+'_userId');
     if ($("#" + account + "_userid").val() !== "") uid = $("#"+account+"_userid").val();
     if (getCode() === 'lockscreen') uid = getCookie(account.toLowerCase()+'_userId');
+	
     var pwd = $("#"+account+"_pwd").val();
 
-    var dataForm = $('form').serialize() + '&source=' + window.location.toString().replace('&', '*').replace('?', '*'); //.split('_').join('');
+    //var dataForm = $('form').serialize() + '&source=' + window.location.toString().replace('&', '*').replace('?', '*'); //.split('_').join('');
+	
+	var dataForm = new FormData();
+	
+    //var dfLength = dataForm.length;
+    //dataForm = dataForm.substring(2, dfLength);
+    //dataForm = dataForm.split('%3C').join('%26lt%3B');
+	//?mode=signin&userid=" + uid + "&pwd=" + pwd
 
-    var dfLength = dataForm.length;
-    dataForm = dataForm.substring(2, dfLength);
-    dataForm = dataForm.split('%3C').join('%26lt%3B');
-    path = "OPHCore/api/default.aspx?mode=signin&userid=" + uid + "&pwd=" + pwd;
+	dataForm.append('mode', 'signin');
+	dataForm.append('userid', uid);
+	dataForm.append('pwd', pwd);
+	dataForm.append('source', window.location.toString().replace('&', '*').replace('?', '*'));
+	
+    path = "OPHCore/api/default.aspx";
 
     $.ajax({
         url: path,
         data: dataForm,
         type: 'POST',
+        cache: false,
+        contentType: false,
+        processData: false,
         dataType: "xml",
         timeout: 80000,
         beforeSend: function () {

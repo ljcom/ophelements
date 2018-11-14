@@ -42,7 +42,7 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
 					defaultValue: defaultValue,
 					wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
 					wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
-
+                    parentCode: getCode()
 				},
 				dataType: "json",
 				success: function (data) {
@@ -66,7 +66,7 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
 					defaultValue: defaultValue,
 					wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
 					wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
-
+                    parentCode: getCode()
 				},
 				dataType: "json",
 				success: function (data) {
