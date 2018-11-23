@@ -64,7 +64,7 @@ function cell_init(code) {
                 d = d1.getDate() + '/' + (d1.getMonth() + 1) + '/' + d1.getFullYear();
 
 
-                $(".cell-editor-datepicker").eq(i).html("<div contenteditable='true' id='+selid+' data-date='" + d + "'>" + txt + "</div>");
+                $(".cell-editor-datepicker").eq(i).html("<div contenteditable='true' id='+selid+' data-child='Y' data-date='" + d + "'>" + txt + "</div>");
 
                 $('.cell-editor-datepicker').eq(i).children('div').datepicker({
                     autoclose: true,
@@ -96,6 +96,7 @@ function cell_init(code) {
 
                 $(".cell-editor-datepicker").eq(i).attr('contenteditable', 'true');
                 d1 = new Date($(".cell-editor-datepicker").eq(i).html());
+                $(".cell-editor-datepicker").eq(i).data("child", "Y");
                 d = d1.getDate() + '/' + (d1.getMonth() + 1) + '/' + d1.getFullYear();
                 $(".cell-editor-datepicker").eq(i).data("date", d);
 
