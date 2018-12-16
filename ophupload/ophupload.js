@@ -31,11 +31,11 @@ Upload.prototype.doUpload = function (url, successF, errorF) {
             return myXhr;
         },
         success: function (data) {
-            if (typeof successF == "function") successF(data);
+            if (typeof successF == "function") successF(data, that);
             // your callback here
         },
         error: function (error) {
-            if (typeof errorF == "function") errorF(error);
+            if (typeof errorF == "function") errorF(error, that);
             // handle error
         },
         async: true,
@@ -97,13 +97,19 @@ function upload_init(code, f_success, f_error) {
                     });
                     preview('1', getCode(), getGUID(), 'formheader', this);
                 }
+                if (input.data("webcam")=="1") {
+                    //showImage(input, '');
+                    showImage(this, this.name.replace('_hidden', '')+'_camera_img'); 
+                }
             });
 
             $(':file').eq(i).on('fileselect', function (event, numFiles, label) {
-
-                var input = $(this).parents('.input-group').find(':text'),
+                var d=$(this).data("field");    
+                if (d) input= $('#'+d)
+                else var input = $(this).parents('.input-group').find(':text');
+                
                 //log = numFiles > 1 ? numFiles + ' files selected' : label;
-                log = label;
+                var log = label;
                 if (input.length) {
                     input.val(log);
                     checkChanges(this);
@@ -117,6 +123,23 @@ function upload_init(code, f_success, f_error) {
 
 
 }
+
+function showImage(input, imgDiv) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#'+imgDiv)
+                    .attr('src', e.target.result);
+                    //.width(150)
+                    //.height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+			checkChanges(input, true);
+        }
+    }
+
 function export_init(code, withParam, mode, par, xmlpar, afterSuccess) {
     $(document).on('change', ':file', function () {
         if(withParam == 0) $('#btn_imp').attr('disabled', 'disabled');
