@@ -8,18 +8,34 @@ function autosuggest_onchange(ini, flag, code, GUID, formid) {
     if (dataOld != dataValue) {
         $(ini).data('old', dataValue);
         preview(flag, code, GUID, formid, ini);
-        if ($(ini).data("child") == 'Y') {
+        if ($(ini).data("child") === 'Y') {
             $('#child_button_addSave').show();
             $('#child_button_save').show();
             $('#child_button_cancel').show();
+            $('#child_button_delete').hide();
+            $('#child_button_save2').show();
+            $('#child_button_cancel2').show();
+            $('#child_button_delete2').hide();
         }
         else {
-            $('#button_addSave').show();
+            //$('#button_addSave').show();
             $('#button_save').show();
             $('#button_cancel').show();
+            $('#button_submit').hide();
+            $('#button_delete').hide();
             $('#button_approve').hide();
             $('#button_reject').hide();
             $('#button_close').hide();
+            $('#button_save2').show();
+            $('#button_cancel2').show();
+
+            $('.action-save').show();
+            $('.action-cancel').show();
+            $('.action-submit').hide();
+            $('.action-delete').hide();
+            $('.action-approve').hide();
+            $('.action-reject').hide();
+            $('.action-close').hide();
         }
 
     }

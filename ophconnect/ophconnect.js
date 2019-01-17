@@ -45,7 +45,8 @@ function signIn(account, autoLogin) {
             success: function (data) {
                 var x = $(data).find("sqroot").children().each(function () {
                     var msg = $(this).text();
-                    var app = window.location.href.substring(0, window.location.href.indexOf("/index")).substring(window.location.href.substring(0, window.location.href.indexOf("/index")).lastIndexOf("/") + 1)
+                    var app = window.location.href.substring(0, window.location.href.indexOf("/index")).substring(window.location.href.substring(0, window.location.href.indexOf("/index")).lastIndexOf("/") + 1).replace(":", "");
+
                     var landingPage = getCookie(app + '_lastPar') === null || getCookie(app + '_lastPar') === '' ? '?' : getCookie(app + '_lastPar');
 
                     if (msg !== '') {

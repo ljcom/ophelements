@@ -12,6 +12,7 @@ function cell_init(code) {
 
     $(".cell").each(function (i) {
         var c = $(".cell").eq(i);
+        $(c).data("child", "Y");
         if ($(c).parent().data("code"))
             if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && c.data('old') == undefined) {
                 if (isIE() || isEdge()) {
