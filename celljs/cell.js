@@ -20,8 +20,9 @@ function cell_init(code) {
                 else {
                     c.data('old', $(".cell").eq(i).html());
                 }
-                c.click(function () {
-                    if (start != this) cell_focus(this);
+                c.click(function (e) {
+                    if (start != this) //e.preventDefault();
+                        cell_focus(this);
                 });
                 c.keydown(function (e) { return cell_keyCheck(e) });
             }
@@ -193,14 +194,15 @@ function cell_init(code) {
                     }
                 });
 
-                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '');
-
+                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '');                
                 $(".cell-editor-select2").eq(i).css("padding", "2px");
-
                 $(".cell-editor-select2").eq(i).change(function () {
                     var id = $(".cell-editor-select2").eq(i).data("id");
                     var o = $(".cell-editor-select2").eq(i).find("select").data("old");
-                    var v = $(".cell-editor-select2").eq(i).find("select").val();
+
+                    //var v = $(".cell-editor-select2").eq(i).find("select").val(); 
+                    var v = $(".cell-editor-select2:eq("+i+")>span>select").val();
+
                     var preview = $(".cell-editor-select2").eq(i).data("preview");
                     cell_autosuggest_onchange(this, getCode(), id);
                     if (v != o && v != 'NULL') {
@@ -213,7 +215,7 @@ function cell_init(code) {
                         setTimeout(function () {
 
                             g = $(start).parent().data("guid");
-                            var preview = $(start).data("preview");
+                            //var preview = $(start).data("preview");
                             cell_preview(preview, code, g, null, start);
                         }, 100);
                     }
@@ -634,7 +636,7 @@ function cell_save(afterSuccess) {
 
                 var data = '';// new FormData();
                 $("#tr1_" + code.toLowerCase() + guid).children("td.cell").each(function (i, td) {
-                    if (!$(td).hasClass("cell-disabled")) {
+                    if ($(td).attr("contenteditable")=="true") {
                         f = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("field");
                         if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-select2"))
                             d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
@@ -648,7 +650,10 @@ function cell_save(afterSuccess) {
                                 d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).html();
                             }
                         }
-                        if (d != undefined && d != null) data = data + f + '=' + d.toString().replace("&nbsp;", " ") + '&';
+                        if (d != undefined && d != null) {
+                            d = ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("type") == "number") ? d.split(",").join("") : d;
+                            data = data + f + '=' + d.toString().replace("&nbsp;", " ") + '&';
+                        }
                     }
                 });
 
@@ -740,7 +745,7 @@ function cell_save(afterSuccess) {
 }
 
 function cell_edit(t) {
-    if (!$(t).hasClass("cell-disabled")) {
+    if (!$(t).hasClass("cell-disabled") && t) {
         cell_clearTack(t);
         $(t).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-caret-right");
         $(t).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
@@ -773,7 +778,7 @@ function cell_add(code, columns, isParent, t) {
             //ix = i.split(":")
             if (ix[0].split("=")[0] != "")
                 if (ix[0].split("=")[1] != "")
-                    columns_string += "<td class='cell cell-editor-" + ix[0].split("=")[1].trim() + "' data-field='" + ix[1].split("=")[1] + "' data-preview='" + ix[2].split("=")[1] + "' data-wf1='" + ix[4].split("=")[1] + "' data-wf2='" + ix[5].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
+                    columns_string += "<td class='cell cell-editor-" + ix[0].split("=")[1].trim() + "' data-id data-field='" + ix[1].split("=")[1] + "' data-preview='" + ix[2].split("=")[1] + "' data-wf1='" + ix[4].split("=")[1] + "' data-wf2='" + ix[5].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
                 else
                     columns_string += "<td class='cell cell-disabled' data-field='" + ix[1].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
             else
@@ -859,7 +864,10 @@ function cell_preview(flag, code, GUID, formid, t) {
                     d = $("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).html();
                 }
             }
-            if (d != undefined) data = data + f + '=' + d.toString().replace("&nbsp;", " ") + '&';
+            if (d != undefined) {
+                d = ($("#tr1_" + code.toLowerCase() + GUID).children("td.cell").eq(i).data("type") == "number") ? d.split(",").join("") : d;
+                data = data + f + '=' + d.toString().replace("&nbsp;", " ") + '&';
+            }
         }
     });
 
@@ -874,6 +882,7 @@ function cell_preview(flag, code, GUID, formid, t) {
     dataFrm = data;//.serialize();
 
     previewFunction(flag, code, GUID, formid, dataFrm, t, function (data) {
+        /*
         $(data).find("message").children().each(function () {
             dt = this;
             $(t).parent().children("td.cell").each(function (i) {
@@ -914,8 +923,9 @@ function cell_preview(flag, code, GUID, formid, t) {
 
         })
 
-
+        */
     });
+    
 }
 
 function cell_autosuggest_onchange(ini, code, GUID) {
