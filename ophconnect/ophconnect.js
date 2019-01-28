@@ -1,67 +1,75 @@
 
 //connection
-function signIn(account) {
-    var uid = getCookie(account+'_userId');
-    if ($("#" + account + "_userid").val() !== "") uid = $("#"+account+"_userid").val();
-    if (getCode() === 'lockscreen') uid = getCookie(account.toLowerCase()+'_userId');
-	
-    var pwd = $("#"+account+"_pwd").val();
+function signIn(account, autoLogin) {
+    //if (autoLogin) {
+        //if ($('#skipAutoLoginPage').prop("checked")) setCookie("skipAutoLoginPage", "1", 1, 0, 0);
+        //url = window.location.href + (window.location.href.indexOf('?') >= 0 ? '&' : '?') + 'autologin=1';
+        //goTo(url, true);
+    //}
+    //else {
 
-    //var dataForm = $('form').serialize() + '&source=' + window.location.toString().replace('&', '*').replace('?', '*'); //.split('_').join('');
-	
-	var dataForm = new FormData();
-	
-    //var dfLength = dataForm.length;
-    //dataForm = dataForm.substring(2, dfLength);
-    //dataForm = dataForm.split('%3C').join('%26lt%3B');
-	//?mode=signin&userid=" + uid + "&pwd=" + pwd
+        var uid = getCookie(account + '_userId');
+        if ($("#" + account + "_userid").val() !== "") uid = $("#" + account + "_userid").val();
+        if (getCode() === 'lockscreen') uid = getCookie(account.toLowerCase() + '_userId');
 
-	dataForm.append('mode', 'signin');
-	dataForm.append('userid', uid);
-	dataForm.append('pwd', pwd);
-	dataForm.append('source', window.location.toString().replace('&', '*').replace('?', '*'));
-	
-    path = "OPHCore/api/default.aspx";
+        var pwd = $("#" + account + "_pwd").val();
 
-    $.ajax({
-        url: path,
-        data: dataForm,
-        type: 'POST',
-        cache: false,
-        contentType: false,
-        processData: false,
-        dataType: "xml",
-        timeout: 80000,
-        beforeSend: function () {
-            //setCursorWait(this);
-        },
-        success: function (data) {
-            var x = $(data).find("sqroot").children().each(function () {
-                var msg = $(this).text();
-                var app = window.location.href.substring(0, window.location.href.indexOf("/index")).substring(window.location.href.substring(0, window.location.href.indexOf("/index")).lastIndexOf("/") + 1)
-                var landingPage = getCookie(app+'_lastPar') === null || getCookie(app+'_lastPar') === '' ? '?' : getCookie(app+'_lastPar');
+        //var dataForm = $('form').serialize() + '&source=' + window.location.toString().replace('&', '*').replace('?', '*'); //.split('_').join('');
 
-                if (msg !== '') {
-                    if ($(this)[0].nodeName === "userGUID") {
-                        //setCookie('userId', $("#userid").val(), 7);
-                        setCookie(account.toLowerCase() +'_userId', uid, 7);
-                        goTo(landingPage);
-                        //window.location = landingPage;
+        var dataForm = new FormData();
+
+        //var dfLength = dataForm.length;
+        //dataForm = dataForm.substring(2, dfLength);
+        //dataForm = dataForm.split('%3C').join('%26lt%3B');
+        //?mode=signin&userid=" + uid + "&pwd=" + pwd
+
+        dataForm.append('mode', 'signin');
+        dataForm.append('userid', uid);
+        dataForm.append('pwd', pwd);
+        dataForm.append('autoLogin', autoLogin);
+        dataForm.append('source', window.location.toString().replace('&', '*').replace('?', '*'));
+
+        path = "OPHCore/api/default.aspx";
+        $.ajax({
+            url: path,
+            data: dataForm,
+            type: 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "xml",
+            timeout: 80000,
+            beforeSend: function () {
+                //setCursorWait(this);
+            },
+            success: function (data) {
+                var x = $(data).find("sqroot").children().each(function () {
+                    var msg = $(this).text();
+                    var app = window.location.href.substring(0, window.location.href.indexOf("/index")).substring(window.location.href.substring(0, window.location.href.indexOf("/index")).lastIndexOf("/") + 1).replace(":", "");
+
+                    var landingPage = getCookie(app + '_lastPar') === null || getCookie(app + '_lastPar') === '' ? '?' : getCookie(app + '_lastPar');
+
+                    if (msg !== '') {
+                        if ($(this)[0].nodeName === "userGUID") {
+                            //setCookie('userId', $("#userid").val(), 7);
+                            setCookie(account.toLowerCase() + '_userId', uid, 7);
+                            goTo(landingPage);
+                            //window.location = landingPage;
+                        }
+                        if ($(this)[0].nodeName === "message") {
+                            showMessage(msg, 4, true, function () { window.location.reload(); });
+
+                        }
                     }
-                    if ($(this)[0].nodeName === "message") {
-                        showMessage(msg, 4, true, function () { window.location.reload(); });
+                    //else {
 
-                    }
-                }
-                //else {
-
-                //}
-            });
+                    //}
+                });
 
 
-        }
-    });
-
+            }
+        });
+    //}
 }
 
 function signin_GConnect(gid) {
@@ -111,7 +119,8 @@ function signOut(f) {
         setCookie("cartID", "", 0, 0, 0);
         setCookie("isLogin", "0", 0, 1, 0);
         if (typeof f === "function") f();
-        goHome();
+        window.location = "?code=login";
+        //goHome();
     });
 
 }
