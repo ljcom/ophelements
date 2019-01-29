@@ -638,7 +638,8 @@ function cell_save(afterSuccess, autosaveflag) {
 
                 var data = '';// new FormData();
                 $("#tr1_" + code.toLowerCase() + guid).children("td.cell").each(function (i, td) {
-                    if ($(td).attr("contenteditable")=="true") {
+                    if (!$(td).hasClass("cell-disabled")) {
+                    //if ($(td).attr("contenteditable")=="true") {
                         f = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("field");
                         if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-select2"))
                             d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
@@ -677,7 +678,7 @@ function cell_save(afterSuccess, autosaveflag) {
 
                     if (isGuid(msg)) retguid = msg;    //compatible with old version
                     
-                    if (retguid != "") {                    
+                    if (retguid != "" && retguid !='00000000-0000-0000-0000-000000000000') {                    
                         if (retguid == guid) {//update
                             $(lastStart).parent().children("td.cell").each(function (i) {
                                 if (isIE() || isEdge()) {
