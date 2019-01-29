@@ -22,7 +22,8 @@ function cell_init(code) {
                     c.data('old', $(".cell").eq(i).html());
                 }
                 c.click(function (e) {
-                    if (start != this) //e.preventDefault();
+					
+                    if (start != this && $(this).attr('contenteditable')=='true') //e.preventDefault();
                         cell_focus(this);
                 });
                 c.keydown(function (e) { return cell_keyCheck(e) });
@@ -196,7 +197,12 @@ function cell_init(code) {
                     }
                 });
 
-                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '');                
+                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '', function() {
+					if ($("#"+selid).parent().parent().attr('contenteditable')=='false')
+						$("#"+selid).prop('disabled',true);
+					
+				});    
+
                 $(".cell-editor-select2").eq(i).css("padding", "2px");
                 $(".cell-editor-select2").eq(i).change(function () {
                     var id = $(".cell-editor-select2").eq(i).data("id");
@@ -222,7 +228,7 @@ function cell_init(code) {
                         }, 100);
                     }
                 })
-
+				
                 $(".cell-editor-select2").eq(i).find('span').find("select").on('open', function () {
                     this.$search.attr('tabindex', 0);
                     //self.$search.focus(); remove this line

@@ -45,7 +45,7 @@ function autosuggestSetValue(deferreds, SelectID, code, colKey, defaultValue, wf
     autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, wf1, wf2);
 } //old version
 
-function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, wf1, wf2) {
+function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, wf1, wf2, f) {
     //default value only
     if (wf1 == '' || wf1 == undefined) wf1 = 'wf1isnone';
     if (wf2 == '' || wf2 == undefined) wf2 = 'wf2isnone';
@@ -79,6 +79,8 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
                     if ($selection.children('#editForm' + SelectID).length === 0)
                         $('#editForm' + SelectID).appendTo($selection);
                     $('#editForm' + SelectID).show();
+					
+					if (typeof f === "function") f();
                 }
             }));
         }
