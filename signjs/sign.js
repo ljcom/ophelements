@@ -3,19 +3,14 @@ function initSign(el, fieldName) {
     var jel=$('.'+el);
     
     new ResizeSensor(jel, function(){ 
-        setSign(jel);
+        setSign(jel, fieldName);
         });
 
-    jel.find('canvas').attr({
-            //height: jel.innerHeight(),
-            width: jel.innerWidth()
-                -($(jel).find('canvas').css('padding-right').split('px').join(''))
-                -$(jel).find('canvas').css('padding-left').split('px').join('')
-          });
+    setSign(jel, fieldName); 
     
 }
 
-function setSign(jel) {
+function setSign(jel, fieldName) {
     $(jel).find('canvas').attr({
             //height: jel.innerHeight(),
             width: jel.innerWidth()
