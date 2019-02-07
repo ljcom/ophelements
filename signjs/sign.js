@@ -1,9 +1,22 @@
 ﻿
 function initSign(el, fieldName) {
-    jel=$('.'+el);
+    var jel=$('.'+el);
     
     new ResizeSensor(jel, function(){ 
-       $(jel).find('canvas').attr({
+        setSign(jel);
+        });
+
+    jel.find('canvas').attr({
+            //height: jel.innerHeight(),
+            width: jel.innerWidth()
+                -($(jel).find('canvas').css('padding-right').split('px').join(''))
+                -$(jel).find('canvas').css('padding-left').split('px').join('')
+          });
+    
+}
+
+function setSign(jel) {
+    $(jel).find('canvas').attr({
             //height: jel.innerHeight(),
             width: jel.innerWidth()
                 -($(jel).find('canvas').css('padding-right').split('px').join(''))
@@ -42,17 +55,7 @@ function initSign(el, fieldName) {
                 typeItDesc: null,
                 drawItDesc: null
               });
-        });
-
-    jel.find('canvas').attr({
-            //height: jel.innerHeight(),
-            width: jel.innerWidth()
-                -($(jel).find('canvas').css('padding-right').split('px').join(''))
-                -$(jel).find('canvas').css('padding-left').split('px').join('')
-          });
-    
 }
-
 function clearSign(el) {
     $('.'+el).signaturePad().clearCanvas()
 }
