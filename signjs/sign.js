@@ -54,7 +54,7 @@ function setSign(jel, fieldName) {
 function clearSign(el) {
     $('.'+el).signaturePad().clearCanvas()
 }
-//loadScript('ophContent/cdn/signature-pad-master/jquery.signaturepad.js');
+loadScript('ophContent/cdn/signature-pad-master/jquery.signaturepad.js');
 loadScript('ophContent/cdn/signature-pad-master/assets/json2.min.js');
 loadStyle('ophContent/cdn/signature-pad-master/assets/jquery.signaturepad.css');
 loadScript('ophContent/cdn/css-element-queries-1.0.0/src/ResizeSensor.js');
