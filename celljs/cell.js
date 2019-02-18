@@ -22,8 +22,9 @@ function cell_init(code) {
                     c.data('old', $(".cell").eq(i).html());
                 }
                 c.click(function (e) {
-					
-                    if (start != this && $(this).attr('contenteditable')=='true') //e.preventDefault();
+
+                    //if (start != this && $(this).attr('contenteditable')=='true') //e.preventDefault();
+                    if (start != this && !$(this).hasClass('cell-disabled')) //e.preventDefault();
                         cell_focus(this);
                 });
                 c.keydown(function (e) { return cell_keyCheck(e) });
@@ -190,18 +191,18 @@ function cell_init(code) {
                                 wf1value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf1")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").val(),
                                 wf2value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf2")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").val(),
                                 page: params.page
-                            }
+                            };
                             return query;
                         },
-                        dataType: 'json',
+                        dataType: 'json'
                     }
                 });
 
-                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '', function() {
-					if ($("#"+selid).parent().parent().attr('contenteditable')=='false')
-						$("#"+selid).prop('disabled',true);
-					
-				});    
+                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '', function () {
+                    if ($("#" + selid).parent().parent().attr('contenteditable') == 'false')
+                        $("#" + selid).prop('disabled', true);
+
+                });
 
                 $(".cell-editor-select2").eq(i).css("padding", "2px");
                 $(".cell-editor-select2").eq(i).change(function () {
@@ -209,7 +210,7 @@ function cell_init(code) {
                     var o = $(".cell-editor-select2").eq(i).find("select").data("old");
 
                     //var v = $(".cell-editor-select2").eq(i).find("select").val(); 
-                    var v = $(".cell-editor-select2:eq("+i+")>span>select").val();
+                    var v = $(".cell-editor-select2:eq(" + i + ")>span>select").val();
 
                     var preview = $(".cell-editor-select2").eq(i).data("preview");
                     cell_autosuggest_onchange(this, getCode(), id);
@@ -228,7 +229,7 @@ function cell_init(code) {
                         }, 100);
                     }
                 })
-				
+
                 $(".cell-editor-select2").eq(i).find('span').find("select").on('open', function () {
                     this.$search.attr('tabindex', 0);
                     //self.$search.focus(); remove this line
@@ -522,7 +523,7 @@ function cell_cancelChange() {
         var e = $(t).parent().children("td.cell").eq(i);
 
         if ($(e).hasClass("cell-editor-checkbox"))
-            $(e).find("input").val($(start).data("old") == "1" ? true : false);
+            $(e).find("input").val($(start).data("old") === "1" ? true : false);
         //else if ($(e).hasClass("cell-editor-select2"))
         else if ($(e).hasClass("cell-editor-datepicker")) {
             if (isIE() || isEdge())
@@ -540,7 +541,7 @@ function cell_cancelChange() {
                 $(e).html($(e).data("old"));
             }
         }
-    })
+    });
 
     $(t).parent().find("td.cell-recordSelector").children("span").children("ix").removeClass("fa-pencil");
     $(t).parent().find("td.cell-recordSelector").children("span").children("ix").addClass("fa-caret-right");
@@ -650,6 +651,8 @@ function cell_save(afterSuccess, autosaveflag) {
                 var data = '';// new FormData();
                 $("#tr1_" + code.toLowerCase() + guid).children("td.cell").each(function (i, td) {
                     if (!$(td).hasClass("cell-disabled")) {
+                        //if ($(td).attr("contenteditable")=="true") {
+
                         f = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("field");
                         if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-select2"))
                             d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
@@ -687,8 +690,8 @@ function cell_save(afterSuccess, autosaveflag) {
                     var parentKey = document.getElementById('PKName').value;
 
                     if (isGuid(msg)) retguid = msg;    //compatible with old version
-                    
-                    if (retguid != "") {                    
+
+                    if (retguid != "" && retguid != '00000000-0000-0000-0000-000000000000') {
                         if (retguid == guid) {//update
                             $(lastStart).parent().children("td.cell").each(function (i) {
                                 if (isIE() || isEdge()) {
@@ -702,16 +705,30 @@ function cell_save(afterSuccess, autosaveflag) {
 
                             //$(lastStart).parent().find("td.cell-recordSelector").find("ix").addClass("fa-caret-right");
                             $(lastStart).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-pencil");
+                            $(lastStart).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-caret-right");
 
-                            $(start).parent().find('.cell-recordSelector').children('span').find('ix').addClass("fa-caret-right");  //start=next setelah save selesai
-
-
-                            cell_changed = false;
-                            cell_button_onsave(start, false);
+                            if (!($(start).hasClass("cell-editor-checkbox") && start != lastStart)) {
+                                cell_changed = false;
+                            }
+                            cell_button_onsave(lastStart, false);
+                            if (start != lastStart) {
+                                cell_button_onsave(start, true);
+                                $(start).parent().find('.cell-recordSelector').children('span').find('ix').addClass("fa-caret-right");  //start=next setelah save selesai
+                            }
 
                             cell_preview(1, code, guid, null, start);
 
-                            cell_elementonchange = null;
+                            if (!$(start).hasClass("cell-editor-checkbox")) {
+                                cell_elementonchange = null;
+                            }
+                            if ($(start).hasClass("cell-editor-select2")) {
+                                var dataOld = $(start).find("select").data('old');
+                                var dataValue = $(start).find("select").val();
+
+                                if (dataOld != dataValue) $(start).find("select").data('old', dataValue);
+
+                            }
+
                             var modes = getCookie(code.toLowerCase() + '_browseMode');
                             if (modes == '') modes = 'inline';
                             if (reload == '1') loadChild(code, parentKey, cid, null, modes, "undefined");
@@ -732,8 +749,10 @@ function cell_save(afterSuccess, autosaveflag) {
 
                             //loadChild(code);
                             cell_init(code);
-                            cell_changed = false;
-                            cell_added = false;
+                            if (!$(start).hasClass("cell-editor-checkbox")) {
+                                cell_changed = false;
+                                cell_added = false;
+                            }
                             cell_button_onsave(start, false);
 
                             cell_preview(1, code, retguid, null, start);
@@ -746,7 +765,7 @@ function cell_save(afterSuccess, autosaveflag) {
                     }
                     else {//error
 
-                        if (msg && autosaveflag!=1) showMessage(msg, 4);
+                        if (msg && autosaveflag != 1) showMessage(msg, 4);
                         //cell_changed = false;
                         cell_focus(lastStart);
 
@@ -823,7 +842,7 @@ function cell_add(code, columns, isParent, t) {
 
 function cell_cancelAdded() {
     t = cell_elementonchange;
-    cell_button_onsave(t, false)
+    cell_button_onsave(t, false);
 
     $(t).parent().remove();
     clearTimeout(cell_autosave);
@@ -850,7 +869,7 @@ function cell_delete(code, t) {
             //alert("deleted");
         });
         loadChild(code, parentKey, cid, null, mode, "undefined");
-        preview('1', getCode(), getGUID(), 'formheader', this);
+        preview('1', getCode(), getGUID(), '', this);
     }
     else showMessage("Please tack at least one record to be deleted.", 4)
 }
@@ -941,18 +960,19 @@ function cell_preview(flag, code, GUID, formid, t) {
 
         */
     });
-    
+
 }
 
 function cell_autosuggest_onchange(ini, code, GUID) {
-    var dataOld = $(ini).find("select").data('old');
-    var dataValue = $(ini).find("select").val();
+    //var dataOld = $(ini).find("select").data('old');
+    //var dataValue = $(ini).find("select").val();
 
-    if (dataOld != dataValue) {
-        $(ini).find("select").data('old', dataValue);
+    //dont update old here
+    //if (dataOld != dataValue) {
+    //    $(ini).find("select").data('old', dataValue);
 
 
-    }
+    //}
 }
 function cell_selectAll(t) {
     $(t).parent().parent().parent().find("tr").each(function (i) {
