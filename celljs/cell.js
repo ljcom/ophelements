@@ -558,13 +558,7 @@ function cell_setFocus(t) {
         $(t).parent().find('.cell-recordSelector').children('span').find('ix').addClass("fa-caret-right");
     }
 
-
-    //if (!$(t).hasClass("cell-editor-select2")) $(t).find("select").select2('open');
-
     if ($(t).hasClass("cell-editor-textbox") || $(t).hasClass("cell-editor-datepicker")) {
-        //$(t).focus(function() {document.execCommand('selectAll', false, null)});
-
-
         if (isIE() || isEdge()) {
             selectAllText($(t).children("div")[0]);
             $(t).children("div").focus();
@@ -577,6 +571,13 @@ function cell_setFocus(t) {
     else if ($(t).hasClass("cell-editor-select2") && !$(t).hasClass("select2-hidden-accessible")) {
         $(t).find("span").find("select").select2('open');
         $(".select2-search__field").focus();
+    }
+
+    var preview = $(t).data('preview');
+    var g = $(t).parent().data("guid");
+    if (preview > 0) {
+        //Preview Before
+        cell_preview(preview, code, g, null, t);
     }
 }
 function cell_blur(next) {
@@ -595,13 +596,18 @@ function cell_blur(next) {
             code = c;
         }
     }
+    /*
     if (start == undefined) {
         //cell_preview(preview, code, g, null, next);	//Samuel: 11/7/2018 remark karena pertama kali klik blur, akan panggil preview yang sebelumnya. Tidak perlu!
     }
     else {
         cell_preview(preview, code, g, null, start);
     }
-
+    */
+    if (start != undefined) {
+        //preview after
+        cell_preview(preview, code, g, null, start);
+    }
 
     if ($(start).parent().attr("id") != $(next).parent().attr("id")) {
 
@@ -633,7 +639,6 @@ function cell_save(afterSuccess, autosaveflag) {
                         if ($(t).parent().children("td.cell").eq(i).children('div').html() == 'Enter Text Here...') {
                             $(t).parent().children("td.cell").eq(i).children('div').html('');
                         }
-
                     }
                     else {
                         if ($(t).parent().children("td.cell").eq(i).html() == 'Enter Text Here...') {
@@ -644,7 +649,7 @@ function cell_save(afterSuccess, autosaveflag) {
 
                 var data = '';// new FormData();
                 $("#tr1_" + code.toLowerCase() + guid).children("td.cell").each(function (i, td) {
-                    if ($(td).attr("contenteditable")=="true") {
+                    if (!$(td).hasClass("cell-disabled")) {
                         f = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).data("field");
                         if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-select2"))
                             d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
