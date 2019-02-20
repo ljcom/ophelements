@@ -1,4 +1,5 @@
 ﻿var map, infoWindow;
+
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: -34.397, lng: 150.644 },
@@ -39,4 +40,6 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 //loadScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyAuS1y9JVaVu0D_4gFw4U4V88e0HgqI_3A&callback=initMap', true, true);
-loadScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyAuS1y9JVaVu0D_4gFw4U4V88e0HgqI_3A', true, true);
+//loadScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyAuS1y9JVaVu0D_4gFw4U4V88e0HgqI_3A', true, true);
+
+//initMap();

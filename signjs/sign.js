@@ -1,13 +1,22 @@
 ﻿
 function initSign(el, fieldName) {
-    var jel=$('.'+el);
-    
-    new ResizeSensor(jel, function(){ 
-        setSign(jel, fieldName);
-        });
+    $.getScript('ophContent/cdn/signature-pad-master/assets/json2.min.js', 
+        function() {
+            loadStyle('ophContent/cdn/signature-pad-master/assets/jquery.signaturepad.css');
+            $.getScript('ophContent/cdn/signature-pad-master/jquery.signaturepad.js', 
+                function() {
+                    $.getScript('ophContent/cdn/css-element-queries-1.0.0/src/ResizeSensor.js', 
+                        function() {
+                            var jel=$('.'+el);
+                            new ResizeSensor(jel, function()
+                            { 
+                                setSign(jel, fieldName);
+                                });
 
-    setSign(jel, fieldName); 
-    
+                            setSign(jel, fieldName); 
+                        })    
+                })
+        })
 }
 
 function setSign(jel, fieldName) {
@@ -52,9 +61,7 @@ function setSign(jel, fieldName) {
               });
 }
 function clearSign(el) {
-    $('.'+el).signaturePad().clearCanvas()
+    $('.' + el).signaturePad().clearCanvas();
 }
-loadScript('ophContent/cdn/signature-pad-master/jquery.signaturepad.js');
-loadScript('ophContent/cdn/signature-pad-master/assets/json2.min.js');
-loadStyle('ophContent/cdn/signature-pad-master/assets/jquery.signaturepad.css');
-loadScript('ophContent/cdn/css-element-queries-1.0.0/src/ResizeSensor.js');
+
+//initSign();

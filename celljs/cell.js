@@ -13,22 +13,25 @@ function cell_init(code) {
     $(".cell").each(function (i) {
         var c = $(".cell").eq(i);
         $(c).data("child", "Y");
-        if ($(c).parent().data("code"))
-            if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && c.data('old') == undefined) {
-                if (isIE() || isEdge()) {
-                    c.data('old', $(".cell").eq(i).children('div').html());
-                }
-                else {
-                    c.data('old', $(".cell").eq(i).html());
-                }
-                c.click(function (e) {
+		
+		if ($(c).parent().data("code"))
+			if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && c.data('old') == undefined) {
+				if (isIE() || isEdge()) {
+					c.data('old', $(".cell").eq(i).children('div').html());
+				}
+				else {
+					c.data('old', $(".cell").eq(i).html());
+				}
+				if (!$(c).hasClass('cell-disabled')) {
+					c.click(function (e) {
 
-                    //if (start != this && $(this).attr('contenteditable')=='true') //e.preventDefault();
-                    if (start != this && !$(this).hasClass('cell-disabled')) //e.preventDefault();
-                        cell_focus(this);
-                });
-                c.keydown(function (e) { return cell_keyCheck(e) });
-            }
+						//if (start != this && $(this).attr('contenteditable')=='true') //e.preventDefault();
+						if (start != this && !$(this).hasClass('cell-disabled')) //e.preventDefault();
+							cell_focus(this);
+					});
+					c.keydown(function (e) { return cell_keyCheck(e) });
+				}		
+			}
     });
 
     $(".cell-editor-textbox").each(function (i) {
