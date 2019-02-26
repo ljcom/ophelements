@@ -622,7 +622,7 @@ function cell_blur(next) {
     }
 }
 
-function cell_save(afterSuccess, autosaveflag) {
+function cell_save(afterSuccess, beforeStart, autosaveflag) {
     t = cell_elementonchange;
 
     if (!cell_saveworking) {
@@ -774,7 +774,9 @@ function cell_save(afterSuccess, autosaveflag) {
 
                     }
                     cell_saveworking = false;
-                });
+
+                    
+                }, beforeStart);
             }
         }
     }
@@ -790,7 +792,7 @@ function cell_edit(t) {
         cell_button_onsave(start, true);
         cell_elementonchange = t;
 
-        cell_autosave = setTimeout(function () { cell_save(null, 1); }, 60000);
+        cell_autosave = setTimeout(function () { cell_save(null, null, 1); }, 60000);
 
     }
 }
