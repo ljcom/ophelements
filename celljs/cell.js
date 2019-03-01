@@ -692,7 +692,14 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
                     var reload = $(data).children().find("reload").text();
                     var parentKey = document.getElementById('PKName').value;
 
+                    $(lastStart).parent().parent().parent().parent().parent().children(".box-footer").children("button#cell_button_add").button('reset');
+                    $(lastStart).parent().parent().parent().parent().parent().children(".box-footer").children("button#cell_button_save").button('reset');
+                    $(lastStart).parent().parent().parent().parent().parent().children(".box-footer").children("button#cell_button_cancel").button('reset');
+
+
                     if (isGuid(msg)) retguid = msg;    //compatible with old version
+
+		            retguid=retguid.toLowerCase();
 
                     if (retguid != "" && retguid != '00000000-0000-0000-0000-000000000000') {
                         if (retguid == guid) {//update
@@ -994,6 +1001,7 @@ function cell_selectAll(t) {
 }
 
 function cell_button_onsave(t, flag) {
+
     if (flag) {
         $(t).parent().parent().parent().parent().parent().children(".box-footer").children("button#cell_button_add").text("SAVE & ADD NEW");
         $(t).parent().parent().parent().parent().parent().children(".box-footer").children("button#cell_button_save").css("display", "inline");
