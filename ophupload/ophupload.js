@@ -80,7 +80,7 @@ function upload_init(code, f_success, f_error) {
                     var upload = new Upload(file);
                     var p = $(this).parent().parent().parent().parent().parent().parent().parent().data("parentguid");//gchild
                     if (p == undefined) p = $("#cid").val();//child
-                    var url = 'OPHCore/api/default.aspx?mode=upload&code=' + cd + '&parentGUID=' + p;
+                    var url = 'OPHCore/api/default.aspx?mode=upload&code=' + input.data("code") + '&parentGUID=' + p;
 
 
                     upload.doUpload(url,
