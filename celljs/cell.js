@@ -40,7 +40,7 @@ function cell_init(code) {
             if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()
                 && $(".cell-editor-textbox").eq(i).children('div').attr('contenteditable') == undefined) {
                 txt = $(".cell-editor-textbox").eq(i).html();
-                $(".cell-editor-textbox").eq(i).html("<div contenteditable='true' placeholder='Enter Text Here...' style='overflow:none'>" + txt + "</div>")
+                $(".cell-editor-textbox").eq(i).html("<div contenteditable='true' placeholder='Enter Text Here...'>" + txt + "</div>")
             }
         }
         else {
@@ -867,6 +867,9 @@ function cell_cancelAdded() {
 }
 
 function cell_delete(code, t) {
+
+    $(t).parent().children('button#cell_button_delete').button('loading');
+
     var guidlist = [];
     var cid = $("#cid").val();
     var parentKey = document.getElementById('PKName').value;
@@ -883,7 +886,11 @@ function cell_delete(code, t) {
         loadChild(code, parentKey, cid, null, mode, "undefined");
         preview('1', getCode(), getGUID(), '', this);
     }
-    else showMessage("Please tack at least one record to be deleted.", 4)
+    else {
+        showMessage("Please tack at least one record to be deleted.", 4)
+        $(t).parent().children('button#cell_button_delete').button('reset');
+    }
+
 }
 
 function cell_expand(t) {
