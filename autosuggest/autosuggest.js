@@ -123,6 +123,93 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
     //return aj;
 }
 
+function nextDataAutosuggest(ini, code, colkey, SelectID, wf1, wf2) {
+    wf1 = undefined
+    wf2 = undefined
+    
+    $("#" + SelectID).select2({      
+        ajax: {
+            url: "OPHCORE/api/msg_autosuggest.aspx",
+            delay: 0, //500
+            data: function (params) {
+                var query = {
+                code: code,
+                colkey: colkey,
+                /*search: params.term == undefined ? '' : params.term.toString().split('+').join('%2B'),*/
+                wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
+                wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
+                parentCode: getCode(),
+                page: params.page || 2
+            }
+        return query;
+        
+        },
+        dataType: 'json',
+
+        /*
+        results: function (data) {
+            return {
+                results: $.map(data, function(obj) {
+                    return { id: obj.id, text: obj.text };
+                })
+            };
+        },*/
+
+
+
+        results: function (data, params) {
+            params.page = params.page || 1;
+            return {
+                results: $.map(data, function (obj) {
+                    return {
+                        id: obj.name, text: obj.name
+                    };
+                })
+            };
+        },
+
+        cache: true
+
+    }
+    });
+
+    $("#" + SelectID).on("select2:open", function (e) {
+        var s2id = $("span[class*='select2-dropdown select2-dropdown']").children('.select2-results').children().attr('id');
+        s2id = s2id.split('select2-').join('').split('-results').join('');
+        if (s2id == "#" + SelectID) {
+            $("#select2-" + SelectID + "-addNew").appendTo("span[class*='select2-dropdown select2-dropdown']").show();
+        }
+    });
+
+    //pgNo = 1
+
+    //$.ajax({
+    //    url: "OPHCORE/api/msg_autosuggest.aspx",
+    //    data: {
+    //        code: code,
+    //        colkey: colkey,
+    //        pgNo: pgNo+1,
+    //        //defaultValue: defaultValue,
+    //        wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
+    //        wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
+    //        parentCode: getCode()
+    //    },
+    //    dataType: "json",
+      
+    //    success: function (data) {       
+    //        var newOption = new Option(data.results[0].text, data.results[0].id, true, true);
+    //        $("#" + SelectID).append(newOption);//.trigger('change');
+    //        var newOption1 = new Option(data.results[1].text, data.results[1].id, true, true);
+    //        $("#" + SelectID).append(newOption1);//.trigger('change');
+    //        $("#" + SelectID).trigger('change');
+
+    //        //if ($("#" + SelectID).find("option[value='" + data.results + "']").length) {
+    //        //    $("#" + SelectID).val(data.id).trigger('change');
+    //        //}
+            
+    //    }
+    //})
+}
 
 // auto suggest pop-up
 function loadModalForm(divID, code, guid) {

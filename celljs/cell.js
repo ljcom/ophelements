@@ -193,11 +193,22 @@ function cell_init(code) {
                                 search: params.term,
                                 wf1value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf1")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").val(),
                                 wf2value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf2")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").val(),
-                                page: params.page
+                                page: params.page 
                             };
                             return query;
                         },
-                        dataType: 'json'
+                        dataType: 'json',
+
+                        processResults: function (data, params) {
+                            params.page = params.page || 1;
+                            return {
+                                results: data.results,
+                                pagination: {
+                                    more: data.more
+                                }
+                            };
+                        },
+
                     }
                 });
 
@@ -440,8 +451,9 @@ function cell_keyCheck(e) {
         $(start).find("input").prop("checked", !c);
         //($(start).find(".input").checked();
 
-    } else if (kc != undefined && kc != 16) {   //any else
-        cell_edit(start);
+    } else if (kc != undefined && kc != 16 && 
+			$(start).attr('contenteditable')!='false' && $(start).css('user-modify')!='read-only') {   //any else
+	cell_edit(start);
         isPrevent = false;
     }
 
@@ -572,7 +584,7 @@ function cell_setFocus(t) {
             $(t).focus();
         }
     }
-    else if ($(t).hasClass("cell-editor-select2") && !$(t).hasClass("select2-hidden-accessible")) {
+    else if ($(t).hasClass("cell-editor-select2") && !$(t).hasClass("select2-hidden-accessible") && $(t).attr('contenteditable')!='false') {
         $(t).find("span").find("select").select2('open');
         $(".select2-search__field").focus();
     }
