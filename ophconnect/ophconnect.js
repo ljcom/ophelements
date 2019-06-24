@@ -57,7 +57,9 @@ function signIn(account, autoLogin) {
                             //window.location = landingPage;
                         }
                         if ($(this)[0].nodeName === "message") {
-                            showMessage(msg, 4, true, function () { window.location.reload(); });
+                            showMessage(msg, 4, true, function () { 
+							if (getCookie('isWhiteAddress')==0) window.location.reload(); 
+							});
 
                         }
                     }
@@ -118,6 +120,9 @@ function signOut(f) {
     $.post(path).done(function () {
         setCookie("cartID", "", 0, 0, 0);
         setCookie("isLogin", "0", 0, 1, 0);
+		var app = window.location.href.substring(0, window.location.href.indexOf("/index")).substring(window.location.href.substring(0, window.location.href.indexOf("/index")).lastIndexOf("/") + 1).replace(":", "");
+		setCookie(app + "_lastPar", "", 0, 1, 0);
+		setCookie("lastPar", "", 0, 1, 0);
         if (typeof f === "function") f();
         window.location = "?code=login";
         //goHome();
