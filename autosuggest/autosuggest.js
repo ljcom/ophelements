@@ -41,6 +41,15 @@ function autosuggest_onchange(ini, flag, code, GUID, formid) {
     }
 }
 
+function autosuggest_defaultValue(SelectID, id, text) {
+	var newOption = new Option(text, id, true, true);
+	var InitialValue = id;
+	//$("#" + SelectID).data("old", InitialValue);
+	//$("#" + SelectID).val(InitialValue);
+	//$("#" + SelectID).data("oldtext", text);
+	$("#" + SelectID).append(newOption).trigger('change');
+} 
+
 function autosuggestSetValue(deferreds, SelectID, code, colKey, defaultValue, wf1, wf2) {
     autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, wf1, wf2);
 } //old version
