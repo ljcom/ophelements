@@ -56,16 +56,19 @@ function autosuggestSetValue(deferreds, SelectID, code, colKey, defaultValue, wf
 
 function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, wf1, wf2, f) {
     //default value only
+	autosuggest_editValue(deferreds, SelectID, code, colKey, defaultValue, true, wf1, wf2, f);
+}
+function autosuggest_editValue(deferreds, SelectID, code, colKey, value, asDefault, wf1, wf2, f) {
     if (wf1 == '' || wf1 == undefined) wf1 = 'wf1isnone';
     if (wf2 == '' || wf2 == undefined) wf2 = 'wf2isnone';
-    if (defaultValue != '' && defaultValue != undefined) {
+    if (value != '' && value != undefined) {
         if (deferreds) {
             deferreds.push($.ajax({
                 url: "OPHCORE/api/msg_autosuggest.aspx",
                 data: {
                     code: code,
                     colkey: colKey,
-                    defaultValue: defaultValue,
+                    defaultValue: value,
                     wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
                     wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
                     parentCode: getCode()
@@ -74,9 +77,9 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
                 success: function (data) {
                     var newOption = new Option(data.results[0].text, data.results[0].id, true, true);
                     var InitialValue = data.results[0].id;
-                    $("#" + SelectID).data("old", InitialValue);
                     $("#" + SelectID).val(InitialValue);
-                    $("#" + SelectID).data("oldtext", data.results[0].text);
+                    if (asDefault) $("#" + SelectID).data("old", InitialValue);
+					if (asDefault) $("#" + SelectID).data("oldtext", data.results[0].text);
                     $("#" + SelectID).append(newOption).trigger('change');
 
                     $selection = $("#select2-" + SelectID + "-container").parents('.selection');
@@ -100,7 +103,7 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
                 data: {
                     code: code,
                     colkey: colKey,
-                    defaultValue: defaultValue,
+                    defaultValue: value,
                     wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
                     wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
                     parentCode: getCode()
@@ -109,9 +112,9 @@ function autosuggest_setValue(deferreds, SelectID, code, colKey, defaultValue, w
                 success: function (data) {
                     var newOption = new Option(data.results[0].text, data.results[0].id, true, true);
                     var InitialValue = data.results[0].id;
-                    $("#" + SelectID).data("old", InitialValue);
                     $("#" + SelectID).val(InitialValue);
-                    $("#" + SelectID).data("oldtext", data.results[0].text);
+                    if (asDefault) $("#" + SelectID).data("old", InitialValue);
+                    if (asDefault) $("#" + SelectID).data("oldtext", data.results[0].text);
                     $("#" + SelectID).append(newOption).trigger('change');
 
                     $selection = $("#select2-" + SelectID + "-container").parents('.selection');
