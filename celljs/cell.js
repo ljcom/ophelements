@@ -171,6 +171,7 @@ function cell_init(code) {
                 var cd = $(c).parent().data("code");
                 var id = $(c).data("id");
                 var selid = fn + '_' + $(this).parent().data("guid");
+				var combovalue=$(".cell-editor-select2")[i].innerText;
 
                 $(".cell-editor-select2").eq(i).html('<span><select id="' + selid + '" style="width:100%" data-child="Y"></select></span>');
                 $(".cell-editor-select2").eq(i).data("old", id);
@@ -212,11 +213,13 @@ function cell_init(code) {
                     }
                 });
 
-                autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '', function () {
-                    if ($("#" + selid).parent().parent().attr('contenteditable') == 'false')
-                        $("#" + selid).prop('disabled', true);
+                //autosuggest_setValue(cell_deferred, selid, cd, fn, id, '', '', function () {
+                //    if ($("#" + selid).parent().parent().attr('contenteditable') == 'false')
+                //        $("#" + selid).prop('disabled', true);
 
-                });
+                //});
+				autosuggest_defaultValue(selid, id, combovalue);
+				
 
                 $(".cell-editor-select2").eq(i).css("padding", "2px");
                 $(".cell-editor-select2").eq(i).change(function () {
@@ -341,7 +344,10 @@ function cell_focus(sibling, mode) {	//mode=0 normal, mode=1 force, mode=2 save,
     //    showMessage("Please complete your new line, press ESC to cancel.", 1, start, function () { cell_setFocus(start); })
 
     //}
-    if (sibling != null) {
+	if ($(start).parent().data("guid") !=$(sibling).parent().data("guid") && (cell_changed || cell_added) && cell_saveworking) {
+		//alert('waiting...');
+	}
+	else if (sibling != null) {
         sibling.focus();
         if (start != sibling || mode == 1) {
             cell_blur(sibling);
@@ -453,8 +459,8 @@ function cell_keyCheck(e) {
 
     } else if (kc != undefined && kc != 16 && 
 			$(start).attr('contenteditable')!='false' && $(start).css('user-modify')!='read-only') {   //any else
-	cell_edit(start);
-        isPrevent = false;
+		
+        isPrevent = !cell_edit(start);
     }
 
     if (isPrevent) {
@@ -638,6 +644,8 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
     t = cell_elementonchange;
 
     if (!cell_saveworking) {
+		//setTimeout(function() {cell_save(afterSuccess, beforeStart, autosaveflag);}, 100);	
+	//else {
         if (cell_changed || cell_added) {
             cell_blur(start);
 
@@ -649,7 +657,7 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
                 cell_saveworking = true;
 
                 lastStart = start;
-
+				console.log('save'+guid);
                 $(t).parent().children("td.cell").each(function (i) {
                     if (isIE() || isEdge()) {
                         if ($(t).parent().children("td.cell").eq(i).children('div').html() == 'Enter Text Here...') {
@@ -802,18 +810,25 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
 }
 
 function cell_edit(t) {
+	var ret=true;
     if (!$(t).hasClass("cell-disabled") && t) {
-        cell_clearTack(t);
-        $(t).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-caret-right");
-        $(t).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
+        if ($(lastStart).parent().data("guid") !=$(t).parent().data("guid") && (cell_changed || cell_added) && cell_saveworking) {
+			//alert('waiting...');
+			ret=false;
+		}	
+		else {
+			cell_clearTack(t);
+			$(t).parent().find("td.cell-recordSelector").find("ix").removeClass("fa-caret-right");
+			$(t).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
 
-        cell_changed = true;
-        cell_button_onsave(start, true);
-        cell_elementonchange = t;
+			cell_changed = true;
+			cell_button_onsave(start, true);
+			cell_elementonchange = t;
 
-        cell_autosave = setTimeout(function () { cell_save(null, null, 1); }, 60000);
-
+			cell_autosave = setTimeout(function () { cell_save(null, null, 1); }, 60000);
+		}
     }
+	return ret;
 }
 
 function cell_clearTack(t) {
