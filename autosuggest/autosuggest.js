@@ -69,8 +69,8 @@ function autosuggest_editValue(deferreds, SelectID, code, colKey, value, asDefau
                     code: code,
                     colkey: colKey,
                     defaultValue: value,
-                    wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
-                    wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
+                    wf1value: (wf1==undefined || wf1=='' || $("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
+                    wf2value: (wf2==undefined || wf2=='' || $("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
                     parentCode: getCode()
                 },
                 dataType: "json",
@@ -148,8 +148,8 @@ function nextDataAutosuggest(ini, code, colkey, SelectID, wf1, wf2) {
                 code: code,
                 colkey: colkey,
                 /*search: params.term == undefined ? '' : params.term.toString().split('+').join('%2B'),*/
-                wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
-                wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
+                wf1value: (wf1==undefined || wf1=='' || $("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
+                wf2value: (wf2==undefined || wf2=='' || $("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
                 parentCode: getCode(),
                 page: params.page || 2
             }

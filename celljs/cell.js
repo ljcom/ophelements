@@ -192,8 +192,8 @@ function cell_init(code) {
                                 code: $(this).parent().parent().parent().data("code"),
                                 colkey: $(this).parent().parent().data("field"),
                                 search: params.term,
-                                wf1value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf1")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").val(),
-                                wf2value: $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf2")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").val(),
+                                wf1value: $(this).parent().parent().data("wf1")==undefined || $(this).parent().parent().data("wf1")=='' ? '' : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf1")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf1") + '"]').find("select").val(),
+                                wf2value: $(this).parent().parent().data("wf2")==undefined || $(this).parent().parent().data("wf2")=='' ? '' : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").length == 0 ? $('#' + $(this).parent().parent().data("wf2")).val() : $(this).parent().parent().parent().find('[data-field="' + $(this).parent().parent().data("wf2") + '"]').find("select").val(),
                                 page: params.page 
                             };
                             return query;
