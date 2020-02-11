@@ -104,8 +104,8 @@ function autosuggest_editValue(deferreds, SelectID, code, colKey, value, asDefau
                     code: code,
                     colkey: colKey,
                     defaultValue: value,
-                    wf1value: ($("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
-                    wf2value: ($("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
+                    wf1value: (wf1=='' || wf1==undefined || $("#" + wf1).data("value") === undefined ? "" : $("#" + wf1).data("value")),
+                    wf2value: (wf2=='' || wf2==undefined || $("#" + wf2).data("value") === undefined ? "" : $("#" + wf2).data("value")),
                     parentCode: getCode()
                 },
                 dataType: "json",

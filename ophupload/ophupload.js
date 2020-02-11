@@ -165,9 +165,11 @@ function export_init(code, withParam, mode, par, xmlpar, afterSuccess) {
             var fields = parameter.split(",");
                 
             for (var i = 0; i < fields.length; i++) {
-                var value = $('#' + fields[i]).val()
-                value = (value && value != '') ? value : 'NULL';
-                xmlParameter = xmlParameter.split('#' + fields[i] + '#').join(value);
+				if (fields[i]!='') {
+					var value = $('#' + fields[i]).val()
+					value = (value && value != '') ? value : 'NULL';
+					xmlParameter = xmlParameter.split('#' + fields[i] + '#').join(value);
+				}
             }
             xmlParameter = xmlParameter.split('<').join('ss3css').split('>').join('ss3ess');
             xmlParameter = xmlParameter.split('&lt;').join('ss3css').split('&gt;').join('ss3ess');
