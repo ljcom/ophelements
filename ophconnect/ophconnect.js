@@ -158,7 +158,7 @@ function clearLoginText() {
     $("#pwd").val('');
 }
 
-function signOut(f) {
+function signOut(code, f) {
 
     var path = 'OPHCore/api/default.aspx?mode=signout' + '&unique=' + getUnique();
     $.post(path).done(function () {
@@ -168,7 +168,8 @@ function signOut(f) {
         setCookie(app + "_lastPar", "", 0, 1, 0);
         setCookie("lastPar", "", 0, 1, 0);
         if (typeof f === "function") f();
-        window.location = "?code=login";
+		if (code==undefined) code='login';
+        window.location = "?code="+code;
         //goHome();
     });
 
@@ -218,7 +219,7 @@ function checkForgot(account, email) {
                     var msg = $(this).text();
 
                     if (msg !== '') {
-                        if ($(this)[0].nodeName === "sent") {
+                        if (msg=='1') {
                             goTo('?code=login&mode=4&email=' + email);
                         }
                         if ($(this)[0].nodeName === "message") showMessage(msg, 4);
@@ -354,6 +355,5 @@ function chooseAccount(account, suba) {
     else
         showMessage('Please fill Account ID before continue.', 4, true);
 
-
-
 }
+

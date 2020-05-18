@@ -32,7 +32,8 @@ function cell_init(code) {
 					c.keydown(function (e) { return cell_keyCheck(e) });
 				}		
 			}
-    });
+
+	});
 
     $(".cell-editor-textbox").each(function (i) {
         var c = $(".cell-editor-textbox").eq(i);
@@ -60,7 +61,7 @@ function cell_init(code) {
         var cd = $(c).parent().data("code");
         var id = $(c).data("id");
         var selid = fn + '_' + $(this).parent().data("guid");
-        $(c).attr("id", selid);
+        //$(c).attr("id", selid);	//jangan kasih id karena akan dianggap sebagai select2, tapi mungkin udah ada yang menggunakan info ini, kemungkinan jadi error
 
         if (isIE() || isEdge()) {
             if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()
@@ -218,7 +219,7 @@ function cell_init(code) {
                 //        $("#" + selid).prop('disabled', true);
 
                 //});
-				autosuggest_defaultValue(selid, id, combovalue);
+				autosuggest_defaultValue(selid, $(this).parent().data("guid"), combovalue);
 				
 
                 $(".cell-editor-select2").eq(i).css("padding", "2px");
@@ -316,7 +317,6 @@ function cell_init(code) {
         }
     });
 
-
     //document.onkeydown = cell_keyCheck;
 
     window.onbeforeunload = function (event) {
@@ -331,7 +331,6 @@ function cell_init(code) {
             return message;
         }
     }
-
 }
 
 function cell_defer(def) {
@@ -706,7 +705,7 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
 
                 dataFrm = data;//.serialize();
 
-                saveFunction1(code, guid, '30', formId, dataFrm, function (data) {
+                const ret=saveFunction1(code, guid, '30', formId, dataFrm, function (data) {
                     var msg = $(data).children().find("message").text();
                     var retguid = $(data).children().find("guid").text();
                     var reload = $(data).children().find("reload").text();
@@ -804,7 +803,8 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
 
                     
                 }, beforeStart);
-            }
+				if (!ret) cell_saveworking=false;
+			}
         }
     }
 }
@@ -838,45 +838,56 @@ function cell_clearTack(t) {
 }
 
 function cell_add(code, columns, isParent, t) {
-    if (cell_added || cell_changed) {
-        cell_save(function () {
-            cell_add(code, columns, isParent, t);
-        });
-    }
-    else {
+    //if (cell_has_inited) {
+		if (cell_added || cell_changed) {
+			cell_save(function () {
+				cell_add(code, columns, isParent, t);
+			});
+		}
+		else {
 
-        //var cx = columns.split(",");
-        var columns_string = "";
-        columns.forEach(function (ix) {
+			//var cx = columns.split(",");
+			var columns_string = "";
+			columns.forEach(function (ix) {
 
-            //ix = i.split(":")
-            if (ix[0].split("=")[0] != "")
-                if (ix[0].split("=")[1] != "")
-                    columns_string += "<td class='cell cell-editor-" + ix[0].split("=")[1].trim() + "' data-id data-field='" + ix[1].split("=")[1] + "' data-preview='" + ix[2].split("=")[1] + "' data-wf1='" + ix[4].split("=")[1] + "' data-wf2='" + ix[5].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
-                else
-                    columns_string += "<td class='cell cell-disabled' data-field='" + ix[1].split("=")[1] + "' align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
-            else
-                if (ix[1].split("=")[0] == undefined) columns_string += "<td class='cell'></td>"
-        });
+				//ix = i.split(":")
+				if (ix[0].split("=")[0] != "")
+					if (ix[0].split("=")[1] != "") {
+						columns_string += "<td class='cell cell-editor-" + ix[0].split("=")[1].trim() + "' " 
+							+"data-id data-field='" + ix[1].split("=")[1] + "' data-preview='" + ix[2].split("=")[1] + "' data-wf1='" + ix[4].split("=")[1] + "' "
+							+"data-wf2='" + ix[5].split("=")[1] + "' "
+							+"align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "' "+
+							"data-guid="+ix[9].split("=")[1]+">" 
+							+ ix[3].split("=")[1] + "</td>"
+						//if ((ix[0].split("=")[1] == "select2")
+							//autosuggest_defaultValue(ix[1].split("=")[1], ix[3].split("=")[1], ix[9].split("=")[1]); 
+					}
+					else
+						columns_string += "<td class='cell cell-disabled' data-field='" + ix[1].split("=")[1] + "' "
+							+"align='" + (ix[6].split("=")[1] == '2' ? 'right' : (ix[6].split("=")[1] == '1' ? 'center' : 'left')) + "'>" + ix[3].split("=")[1] + "</td>"
+				else
+					if (ix[1].split("=")[0] == undefined) columns_string += "<td class='cell'></td>"
+			});
 
-        //if ($("tbody#" + code + "").parent().data("haschildren")=='1') tdparent = "<td class='cell-parentSelector'></td>";
-        $(t).parent().parent().children("div").children("table").children("tbody").append("<tr id='tr1_" + code + "00000000-0000-0000-0000-000000000000' data-code='" + code + "' data-guid='00000000-0000-0000-0000-000000000000'>"
-            + (isParent > 0 ? "<td class='cell-parentSelector'></td>" : "")
-            + "<td class='cell-recordSelector'></td>" + columns_string + "</tr>"
-            + (isParent ? "<tr id='tr2_" + code + "00000000-0000-0000-0000-000000000000' style='display:none'><td colspan='100'></td></tr>" : ""))
-        cell_init(code);
+			//if ($("tbody#" + code + "").parent().data("haschildren")=='1') tdparent = "<td class='cell-parentSelector'></td>";
+			$(t).parent().parent().children("div").children("table").children("tbody").append("<tr id='tr1_" + code + "00000000-0000-0000-0000-000000000000' data-code='" + code + "' data-guid='00000000-0000-0000-0000-000000000000'>"
+				+ (isParent > 0 ? "<td class='cell-parentSelector'></td>" : "")
+				+ "<td class='cell-recordSelector'></td>" + columns_string + "</tr>"
+				+ (isParent ? "<tr id='tr2_" + code + "00000000-0000-0000-0000-000000000000' style='display:none'><td colspan='100'></td></tr>" : ""))
+			cell_init(code);
 
-        start = null;
-        lastStart = null;
-        n = $("#tr1_" + code + "00000000-0000-0000-0000-000000000000").find(".cell").eq(0);
-        $(n).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
-        cell_focus(n);
-        cell_preview(1, code, "00000000-0000-0000-0000-000000000000", null, n);
-        cell_added = true;
-        cell_elementonchange = n;
-        cell_button_onsave(n, true);
+			start = null;
+			lastStart = null;
+			n = $("#tr1_" + code + "00000000-0000-0000-0000-000000000000").find(".cell").eq(0);
+			$(n).parent().find("td.cell-recordSelector").find("ix").addClass("fa-pencil");
+			cell_focus(n);
+			cell_preview(1, code, "00000000-0000-0000-0000-000000000000", null, n);
+			cell_added = true;
+			cell_elementonchange = n;
+			cell_button_onsave(n, true);
 
-    }
+		}
+	//}
 }
 
 function cell_cancelAdded() {
