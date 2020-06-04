@@ -219,7 +219,7 @@ function cell_init(code) {
                 //        $("#" + selid).prop('disabled', true);
 
                 //});
-				autosuggest_defaultValue(selid, $(this).parent().data("guid"), combovalue);
+				autosuggest_defaultValue(selid, $(this).data("id"), combovalue);
 				
 
                 $(".cell-editor-select2").eq(i).css("padding", "2px");
