@@ -8,11 +8,11 @@ Upload.prototype.getType = function () {
 };
 Upload.prototype.getSize = function () {
     return this.file.size;
-}; 
+};
 Upload.prototype.getName = function () {
     return this.file.name;
 };
-Upload.prototype.doUpload = function (url, successF, errorF) {
+Upload.prototype.doUpload = function (url, successF, errorF, progressF, beforeSendF) {
     var that = this;
     var formData = new FormData();
 
@@ -26,9 +26,13 @@ Upload.prototype.doUpload = function (url, successF, errorF) {
         xhr: function () {
             var myXhr = $.ajaxSettings.xhr();
             if (myXhr.upload) {
-                myXhr.upload.addEventListener('progress', that.progressHandling, false);
+                myXhr.upload.addEventListener('progress', progressF, false);
             }
             return myXhr;
+        },
+		beforeSend: function (data) {
+            if (typeof beforeSendF == "function") beforeSendF(data, that);
+            // your callback here
         },
         success: function (data) {
             if (typeof successF == "function") successF(data, that);
@@ -46,9 +50,13 @@ Upload.prototype.doUpload = function (url, successF, errorF) {
         timeout: 600000
     });
 }
+function upload_proggress() {
 
-function upload_init(code, f_success, f_error) {
 
+}
+
+function upload_init(code, f_success, f_error, f_progress, f_beforeSend, maxSize) {
+    if (maxSize == undefined) maxSize = 20000000;
     // We can attach the `fileselect` event to all file inputs on the page
     //if ($(document).data("upload") != 1) {
     $(":file").each(function (i) {
@@ -58,12 +66,12 @@ function upload_init(code, f_success, f_error) {
                 var input = $(this),
                     numFiles = input.get(0).files ? input.get(0).files.length : 1,
                     label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                    //label = input.get(0).files.join(',');
+                //label = input.get(0).files.join(',');
                 label = "";
                 for (var i = 1; i < input[0].files.length; i++) {
                     label = label + ", " + input[0].files[i].name;
                 }
-                if (label == "") {
+                if (label == "" && input[0].files.length>0) {
                     label = input[0].files[0].name
                 }
 
@@ -71,10 +79,11 @@ function upload_init(code, f_success, f_error) {
 
 
                 var file = this.files[0];
-                if (file.size > 5024000) {
-                    alert('max upload size is 5M')
+                if (file.size > maxSize) {
+                    ms = maxSize/1000000;
+                    showMessage('max upload size is ' + ms + 'M');
                 }
-                    //submit ajax
+                //submit ajax
                 else {
                     var file = $(this)[0].files[0];
                     var upload = new Upload(file);
@@ -84,30 +93,41 @@ function upload_init(code, f_success, f_error) {
 
 
                     upload.doUpload(url,
-                    function (data) {
-                        //success
+                        function (data) {
+                            //success
 
-                        if (typeof f_success == "function") f_success(data);
-                    },
-                    function (data) {
-                        //error
+                            if (typeof f_success == "function") f_success(data);
+                        },
+                        function (data) {
+                            //error
+								
+                            if (typeof f_error == "function") f_error(data.status);
+                            //else if (typeof f_success == "function") f_success(data);
+                        },
+                        function (data) {
+                            //progress
 
-                        if (typeof f_error == "function") f_error(data);
-                        else if (typeof f_success == "function") f_success(data);
-                    });
+                            if (typeof f_progress == "function") f_progress(data);
+                        },
+						function (data) {
+                            //progress
+
+                            if (typeof f_beforeSend == "function") f_beforeSend(data);
+                        }
+                    );
                     preview('1', getCode(), getGUID(), 'formheader', this);
                 }
-                if (input.data("webcam")=="1") {
+                if (input.data("webcam") == "1") {
                     //showImage(input, '');
-                    showImage(this, this.name.replace('_hidden', '')+'_camera_img'); 
+                    showImage(this, this.name.replace('_hidden', '') + '_camera_img');
                 }
             });
 
             $(':file').eq(i).on('fileselect', function (event, numFiles, label) {
-                var d=$(this).data("field");    
-                if (d) input= $('#'+d)
+                var d = $(this).data("field");
+                if (d) input = $('#' + d)
                 else var input = $(this).parents('.input-group').find(':text');
-                
+
                 //log = numFiles > 1 ? numFiles + ' files selected' : label;
                 var log = label;
                 if (input.length) {
@@ -125,37 +145,39 @@ function upload_init(code, f_success, f_error) {
 }
 
 function showImage(input, imgDiv) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
-            reader.onload = function (e) {
-                $('#'+imgDiv)
-                    .attr('src', e.target.result);
-                    //.width(150)
-                    //.height(200);
-            };
+        reader.onload = function (e) {
+            $('#' + imgDiv)
+                .attr('src', e.target.result);
+            //.width(150)
+            //.height(200);
+        };
 
-            reader.readAsDataURL(input.files[0]);
-			checkChanges(input, true);
-        }
+        reader.readAsDataURL(input.files[0]);
+        checkChanges(input, true);
     }
+}
 
-function export_init(code, withParam, mode, par, xmlpar, afterSuccess) {
+function export_init(code, withParam, mode, par, xmlpar, afterSuccessF, progressF, maxSize) {
+    if (maxSize == undefined) maxSize = 2000000;
     $(document).on('change', ':file', function () {
-        if(withParam == 0) $('#btn_imp').attr('disabled', 'disabled');
+        if (withParam == 0) $('#btn_imp').attr('disabled', 'disabled');
         $('#btn_exp').button('loading');
         $("body").css("cursor", "progress");
 
         var input = $(this), numFiles = input.get(0).files ? input.get(0).files.length : 1, label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
         input.trigger('fileselect', [numFiles, label]);
         var file = this.files[0];
-            
-        if (file.size > 10000000) {
-            showMessage("Maximum file size is 10 Mb");
+
+        if (file.size > maxSize) {
+            ms = maxsize/1000000;
+            showMessage('Maximum file size is ' + ms + 'Mb');
             $('#btn_exp').button('reset');
             $('#btn_imp').removeAttr('disabled');
             $("body").css("cursor", "default");
-        } 
+        }
         else {
             var file = $(this)[0].files[0];
             var upload = new Upload(file);
@@ -163,27 +185,31 @@ function export_init(code, withParam, mode, par, xmlpar, afterSuccess) {
             var parameter = par;
             var xmlParameter = xmlpar;
             var fields = parameter.split(",");
-                
+
             for (var i = 0; i < fields.length; i++) {
-				if (fields[i]!='') {
-					var value = $('#' + fields[i]).val()
-					value = (value && value != '') ? value : 'NULL';
-					xmlParameter = xmlParameter.split('#' + fields[i] + '#').join(value);
-				}
+                if (fields[i] != '') {
+                    var value = $('#' + fields[i]).val()
+                    value = (value && value != '') ? value : 'NULL';
+                    xmlParameter = xmlParameter.split('#' + fields[i] + '#').join(value);
+                }
             }
             xmlParameter = xmlParameter.split('<').join('ss3css').split('>').join('ss3ess');
             xmlParameter = xmlParameter.split('&lt;').join('ss3css').split('&gt;').join('ss3ess');
             xmlParameter = xmlParameter.split('=').join('ss3dss').split('/').join('ss2fss').split('"').join('ss84ss');
 
-            var url = 'OPHCore/api/default.aspx?mode=upload&header=true&code=' + code + '&exportMode=' + exportMode + '&xmlParameter=' + xmlParameter; 
-            upload.doUpload(url, 
-              function (data) {
-                  location.reload();
-              },
-              function (error) {
-                  showMessage(error);
-              }
-            );            
+            var url = 'OPHCore/api/default.aspx?mode=upload&header=true&code=' + code + '&exportMode=' + exportMode + '&xmlParameter=' + xmlParameter;
+            upload.doUpload(url,
+                function (data) {
+                    if (typeof afterSuccessF === "function") afterSuccessF(data);
+                    location.reload();
+                },
+                function (error) {
+                    showMessage(error);
+                },
+                function (data) {
+                    if (typeof progressF === "function") progressF(data);
+                }
+            );
         } //endIF
     });
 }
