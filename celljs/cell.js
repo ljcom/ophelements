@@ -137,6 +137,7 @@ function cell_init(code) {
         if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && $(c).children("input").length == 0) {
             var isChecked = ($(c).html() == '1' ? 'checked' : '');
             $(c).html("<input type='checkbox' data-child='Y' " + isChecked + " />");
+			/* //diremark karena membuat checkbox pertama selalu keklik.
             $(c).click(function (e) {
                 var chk = $(this).closest("tr").find("input:checkbox").get(0);
                 if (e.target != chk) {
@@ -150,19 +151,58 @@ function cell_init(code) {
                     }
                 }
 
-            });
+            });*/
             $(c).find("input").click(function () {
-                cell_save();
-                cell_changed = true;
-                cell_button_onsave(start, true);
-                start = $(this).parent();
-                cell_elementonchange = start;
-                cell_edit(start);
-
+				if (!cell_changed || $(lastStart).parent().data("guid")==$(this).parent().parent().data("guid")) {
+					cell_save();
+					cell_changed = true;
+					cell_button_onsave(start, true);
+					start = $(this).parent();
+					cell_elementonchange = start;
+					cell_edit(start);
+				}
+				else {
+					cell_save();
+					//showMessage('Please wait the other line saving process.');
+					return false;
+				}
             });
         }
     });
-
+    $(".cell-editor-radio").each(function (i) {
+        var c = this;
+        if ($(c).parent().data("code").toLowerCase() == code.toLowerCase() && $(c).children("input").length == 0) {
+			
+			var n=$(c).data("radiooptions").split(";").length;
+			var selid=$(c).data("field")+'_'+$(c).parent().data("guid");
+			var checkNo=$(c).html();
+			$(c).html('');
+			for (var i=0;i<n;i++) {
+				
+				var v1=$(c).data("radiooptions").split(";")[i].split(",")[1];
+				var isChecked = (checkNo==v1 ? 'checked' : '');
+				var label=$(c).data("radiooptions").split(";")[i].split(",")[2];
+				$(c).html($(c).html()+"<input type='radio' id="+selid+"_"+v1+" name='"+selid+"' data-child='Y' value="+v1+" " + isChecked + " />&nbsp;<label>"+label+"</label>&nbsp;");
+				
+			}
+            
+            $(c).find("input").click(function () {
+				if (!cell_changed || $(lastStart).parent().data("guid")==$(this).parent().parent().data("guid")) {
+					cell_save();
+					cell_changed = true;
+					cell_button_onsave(start, true);
+					start = $(this).parent();
+					cell_elementonchange = start;
+					cell_edit(start);
+				}
+				else {
+					cell_save();
+					//showMessage('Please wait the other line saving process.');					
+					return false;
+				}
+            });
+        }
+    });
     $(".cell-editor-select2").each(function (i) {
         var c = $(".cell-editor-select2").eq(i);
         if ($(c).parent().data("code").toLowerCase() == code.toLowerCase()) {
@@ -680,6 +720,9 @@ function cell_save(afterSuccess, beforeStart, autosaveflag) {
                             d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("select").val();
                         else if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-checkbox"))
                             d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("input").prop('checked') ? 1 : 0;
+						else if ($("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).hasClass("cell-editor-radio")) 
+							d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).find("input:checked").val();
+						
                         else {
                             if (isIE() || isEdge()) {
                                 d = $("#tr1_" + code.toLowerCase() + guid).children("td.cell").eq(i).children('div').html();
