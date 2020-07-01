@@ -173,7 +173,7 @@ function chooseAccount(account, suba) {
                     if (msg !== '') {
                         if ($(this)[0].nodeName === "exist") {
                             setCookie(account+'_accountid', suba, 365, 0, 0);
-                            goTo('?code=login');
+                            goTo('?code=login&accountid='+suba);
                         }
                         if ($(this)[0].nodeName === "message") showMessage(msg, 4);
                     }
