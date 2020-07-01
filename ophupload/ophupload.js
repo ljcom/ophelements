@@ -56,7 +56,7 @@ function upload_proggress() {
 }
 
 function upload_init(code, f_success, f_error, f_progress, f_beforeSend, maxSize) {
-    if (maxSize == undefined) maxSize = 20000000;
+    if (maxSize == undefined || maxSize == '') maxSize = 20000000;
     // We can attach the `fileselect` event to all file inputs on the page
     //if ($(document).data("upload") != 1) {
     $(":file").each(function (i) {
