@@ -194,21 +194,23 @@ function clearLoginText() {
 function signOut(code, f, clientid) {
 	var path = 'OPHCore/api/default.aspx?mode=signout' + '&unique=' + getUnique();
 	var isGSignout=true;
-	
-	if (clientid!=undefined && gapi!=null && gapi.auth2!=null) {
-		
-		var a2 = gapi.auth2.getAuthInstance();
-		if (a2.isSignedIn.get()) {
-			isGSignout=false;
-			gSigninInit(clientid, function() {
-				a2.signOut().then(function () {
-					a2.disconnect();		
-					isGSignout=true;
-				});						
-			});	
+	gSigninInit(clientid, function() {
+		if (clientid!=undefined && gapi!=null && gapi.auth2!=null) {
 			
+			var a2 = gapi.auth2.getAuthInstance();
+			if (a2.isSignedIn.get()) {
+				isGSignout=false;
+				gSigninInit(clientid, function() {
+					a2.signOut().then(function () {
+						a2.disconnect();		
+						isGSignout=true;
+					});						
+				});	
+				
+			}
 		}
-	}
+	});
+	
 	setTimeout(function() {	
 		if (isGSignout)
 			$.post(path).done(function () {
